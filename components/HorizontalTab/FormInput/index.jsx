@@ -126,7 +126,29 @@ const index = ({ employment }) => {
         </InputContainer>
         <InputContainer>
           <Input
-            placeholder={`Current Address: ${employment.currentAddress}`}
+            placeholder={`Current Address Line 1: ${employment.currentAddress?.addressLine1}`}
+            disabled
+          />
+          <Input
+            placeholder={`Current Address Line 2: ${employment.currentAddress?.addressLine2}`}
+            disabled
+          />
+        </InputContainer>
+
+        <InputContainer>
+          <Input
+            placeholder={`Town: ${employment.currentAddress?.town}`}
+            disabled
+          />
+          <Input
+            placeholder={`Post Code: ${employment.currentAddress?.postCode}`}
+            disabled
+          />
+        </InputContainer>
+
+        <InputContainer>
+          <Input
+            placeholder={`County: ${employment.previousAddress?.county}`}
             disabled
           />
           <Input
@@ -134,6 +156,7 @@ const index = ({ employment }) => {
             disabled
           />
         </InputContainer>
+
         <InputContainer>
           <Input placeholder={`Post Code: ${employment.postCode}`} disabled />
           <Input
