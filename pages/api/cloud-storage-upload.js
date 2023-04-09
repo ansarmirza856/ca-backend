@@ -26,6 +26,7 @@ export default async function handler(req, res) {
 
       const uploadedFiles = [];
       const formId = req.body.formId;
+      const action = req.body.action;
 
       for (let i = 0; i < req.files.length; i++) {
         const fileName =
@@ -54,61 +55,39 @@ export default async function handler(req, res) {
         });
       }
 
-      const userTaxApplication = await UserTaxApplication.findOneAndUpdate(
-        { formId: formId },
-        {
-          deliveryFiles: uploadedFiles,
-        },
-        { new: true }
-      );
+      if (action === "delivery-files") {
+        const userTaxApplication = await UserTaxApplication.findOneAndUpdate(
+          { formId: formId },
+          {
+            deliveryFiles: uploadedFiles,
+            applicationStatus: "in review",
+          },
+          { new: true }
+        );
 
-      if (!userTaxApplication) {
-        return res.status(404).json({ success: false, error: "No form found" });
+        if (!userTaxApplication) {
+          return res
+            .status(404)
+            .json({ success: false, error: "No form found" });
+        }
+      } else if (action === "user-files") {
+        const userTaxApplication = await UserTaxApplication.findOneAndUpdate(
+          { formId: formId },
+          { deliveryFiles: uploadedFiles, applicationStatus: "in review" },
+          { new: true }
+        );
+
+        if (!userTaxApplication) {
+          return res
+            .status(404)
+            .json({ success: false, error: "No form found" });
+        }
       }
 
       res.status(200).json({
         success: true,
         message: "File uploaded successfully",
       });
-
-      //   const fileName =
-      //     uuidv4().slice(0, 10).split("-").join("") + "-" + req.file.originalname;
-      //   const formId = req.body.formId;
-
-      //   const s3 = new AWS.S3({
-      //     region: process.env.AWS_REGION,
-      //     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      //     secretAccessKey: process.env.AWS_ACCESS_KEY_SECRET,
-      //   });
-
-      //   const params = {
-      //     Bucket: process.env.AWS_BUCKET_NAME,
-      //     Key: fileName,
-      //     Body: req.file.buffer,
-      //     ContentType: req.file.mimetype,
-      //   };
-
-      //   s3.putObject(params).promise();
-
-      //   const userTaxApplication = await UserTaxApplication.findOneAndUpdate(
-      //     { formId: formId },
-      //     {
-      //       deliveryFiles: {
-      //         name: req.file.originalname,
-      //         key: fileName,
-      //       },
-      //     },
-      //     { new: true, upsert: true }
-      //   );
-
-      //   if (!userTaxApplication) {
-      //     return res.status(404).json({ success: false, error: "No form found" });
-      //   }
-
-      //   res.status(200).json({
-      //     success: true,
-      //     message: "File uploaded successfully",
-      //   });
     });
   } else {
     res.status(400).json({ success: false });
