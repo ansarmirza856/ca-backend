@@ -1,211 +1,88 @@
-import React, { useState, useEffect, useRef } from "react";
-import UserAttachments from "./UserAttachments";
-import AdminAttachments from "./AdminAttachments";
+import React, { useEffect, useState } from "react";
+import Collapsible from "../Collapsible";
+import TaxReturnFooter from "../TaxReturnFooter";
+import DocumentUpload from "./DocumentUpload";
 
-import {
-  Container,
-  UploadContainer,
-  UploadForm,
-  UploadField,
-  UploadInput,
-  UploadLabel,
-  RemoveFileButton,
-  FileContainer,
-  FileImage,
-  FileName,
-  SubmitButton,
-  SuccessMessage,
-  ResendButton,
-} from "./index.elements";
+import { Container, TabHeader, Tab, TabContent } from "./index.elements";
+
+const tabs = [
+  { id: 1, label: "Personal Information", disabled: false },
+  { id: 2, label: "Tax Return", disabled: false },
+  { id: 3, label: "Documents", disabled: false },
+  { id: 4, label: "Delivery", disabled: true },
+];
+
+const collapsibles = [
+  { title: "Self Employment" },
+  { title: "Personal Employment" },
+  { title: "Any other Employment" },
+];
 
 const index = ({ data }) => {
-  const [file1, setFile1] = useState(null);
-  const [file2, setFile2] = useState(null);
-  const fileInput1Ref = useRef(null);
-  const fileInput2Ref = useRef(null);
-  const formId = data.data.formId;
-
-  const handleFile1Change = (event) => {
-    const selectedFile = event.target.files[0];
-    setFile1(selectedFile);
-    console.log(selectedFile);
-  };
-
-  const handleFile2Change = (event) => {
-    const selectedFile = event.target.files[0];
-    setFile2(selectedFile);
-  };
-
-  const handleRemoveFile1 = () => {
-    setFile1(null);
-  };
-
-  const handleRemoveFile2 = () => {
-    setFile2(null);
-  };
-
-  // useEffect(() => {
-  //   const getForm = async () => {
-  //     const res = await fetch(
-  //       `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/get-single-application?id=${formId}`
-  //     );
-  //     const data = await res.json();
-  //   };
-
-  //   getForm();
-  // }, []);
+  const [activeTab, setActiveTab] = useState(1);
 
   useEffect(() => {
-    // Add event listeners to the file input elements
-    if (fileInput1Ref.current !== null) {
-      fileInput1Ref.current.addEventListener("change", handleFile1Change);
+    if (data && data.data?.ApprovedByUser) {
+      tabs[3].disabled = false;
     }
-    if (fileInput2Ref.current !== null) {
-      fileInput2Ref.current.addEventListener("change", handleFile2Change);
-    }
+  }, []);
 
-    // Clean up the event listeners when the component is unmounted
-    return () => {
-      if (fileInput1Ref.current !== null) {
-        fileInput1Ref.current.removeEventListener("change", handleFile1Change);
-      }
-      if (fileInput2Ref.current !== null) {
-        fileInput2Ref.current.removeEventListener("change", handleFile2Change);
-      }
-    };
-  }, [fileInput1Ref, fileInput2Ref]);
-
-  const uploadFile = async (file) => {
-    try {
-      const result = await Storage.put(file.originalFilename, file, {
-        level: "public",
-        contentType: file.mimetype,
-        progressCallback(progress) {
-          console.log(`Uploaded: ${progress.loaded}/${progress.total}`);
-        },
-      });
-      const url = await Storage.get(result.key);
-      const awsUrl = url.substring(0, url.indexOf("?"));
-      return awsUrl;
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    }
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      if (!file1 && !file2) {
-        console.log("Please select at least one file");
-        return;
-      }
-
-      if (!formId) {
-        console.log("Please select a form");
-        return;
-      }
-
-      const formData = new FormData();
-      if (file1) {
-        formData.append("files", file1);
-      }
-      if (file2) {
-        formData.append("files", file2);
-      }
-      formData.append("formId", formId);
-      formData.append("attachment", "multiple");
-
-      console.log(formData);
-
-      const response = await fetch("/api/cloud-storage-upload", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await response.json();
-      console.log("File upload successful!", data);
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    }
+  const handleClick = (tabIndex) => {
+    setActiveTab(tabIndex);
   };
 
   return (
     <Container>
-      <>
-        <UserAttachments data={data} />
-
-        {data && data.data.deliveryFiles.length > 0 ? (
-          <AdminAttachments data={data} />
-        ) : (
-          <UploadForm onSubmit={handleSubmit}>
-            <UploadContainer>
-              <UploadInput
-                ref={fileInput1Ref}
-                id="fileInput1"
-                type="file"
-                accept="image/*,.pdf"
-              />
-              <UploadInput
-                ref={fileInput2Ref}
-                id="fileInput2"
-                type="file"
-                accept="image/*,.pdf"
-              />
-              <UploadField
-                onClick={() => {
-                  // Trigger click event on file input element when the div is clicked
-                  if (fileInput1Ref.current !== null && file1 === null) {
-                    fileInput1Ref.current.click();
-                  }
-                }}
-              >
-                <UploadLabel>
-                  {file1 ? (
-                    <FileContainer>
-                      <FileImage src="/images/file-icon.svg" />
-                      <FileName>{file1.name}</FileName>
-                    </FileContainer>
-                  ) : (
-                    "+ Upload File"
-                  )}
-                </UploadLabel>
-                {file1 && (
-                  <RemoveFileButton onClick={handleRemoveFile1}>
-                    Remove File
-                  </RemoveFileButton>
-                )}
-              </UploadField>
-
-              <UploadField
-                onClick={() => {
-                  // Trigger click event on file input element 2 when the div is clicked
-                  if (fileInput2Ref.current !== null && file2 === null) {
-                    fileInput2Ref.current.click();
-                  }
-                }}
-              >
-                <UploadLabel>
-                  {file2 ? (
-                    <FileContainer>
-                      <FileImage src="/images/file-icon.svg" />
-                      <FileName>{file2.name}</FileName>
-                    </FileContainer>
-                  ) : (
-                    "+ Upload File"
-                  )}
-                </UploadLabel>
-
-                {file2 && (
-                  <RemoveFileButton onClick={handleRemoveFile2}>
-                    Remove File
-                  </RemoveFileButton>
-                )}
-              </UploadField>
-            </UploadContainer>
-
-            <SubmitButton type="submit">Send Documents</SubmitButton>
-          </UploadForm>
+      <TabHeader>
+        {tabs.map((tab, index) => (
+          <>
+            <Tab
+              key={tab.id}
+              className={`${activeTab === index + 1 ? "active" : ""} ${
+                tab.disabled ? "disabled" : ""
+              }`}
+              onClick={() => handleClick(index + 1)}
+            >
+              {tab.label}
+            </Tab>
+          </>
+        ))}
+      </TabHeader>
+      <TabContent>
+        {activeTab === 1 && (
+          <>
+            <Collapsible
+              title="Personal Information"
+              slug="PI"
+              data={data.data.personalInformation}
+            ></Collapsible>
+          </>
         )}
-      </>
+        {activeTab === 2 && (
+          <>
+            <Collapsible
+              title="Self Employment"
+              slug="SE"
+              data={data.data.selfEmployment}
+            />
+            <Collapsible
+              title="Personal Employment"
+              slug="PE"
+              data={data.data.personalEmployment}
+            />
+            <Collapsible
+              title="Any other Employment"
+              slug="AOE"
+              data={data.data.anyOtherEmployment}
+            />
+
+            <TaxReturnFooter calculations={data} />
+          </>
+        )}
+
+        {activeTab === 3 && <DocumentUpload data={data} />}
+        {activeTab === 4 && <h4>Content of Tab 4</h4>}
+      </TabContent>
     </Container>
   );
 };
