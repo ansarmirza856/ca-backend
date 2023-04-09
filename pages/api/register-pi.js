@@ -17,7 +17,7 @@ export default authMiddleware(async function handler(req, res) {
           { formId },
           {
             pi: 1,
-            applicationStatus: "in progress",
+            applicationStatus: "in process",
             ...req.body,
           },
           {
