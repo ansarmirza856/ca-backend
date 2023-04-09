@@ -8,7 +8,7 @@ import { Container, TabHeader, Tab, TabContent } from "./index.elements";
 const tabs = [
   { id: 1, label: "Personal Information", disabled: false },
   { id: 2, label: "Tax Return", disabled: false },
-  { id: 3, label: "Documents", disabled: false },
+  { id: 3, label: "Documents", disabled: true },
   { id: 4, label: "Delivery", disabled: true },
 ];
 
@@ -22,6 +22,10 @@ const index = ({ data }) => {
   const [activeTab, setActiveTab] = useState(1);
 
   useEffect(() => {
+    if (data && data.data?.applicationStatus !== "pending") {
+      tabs[2].disabled = false;
+    }
+
     if (data && data.data?.ApprovedByUser) {
       tabs[3].disabled = false;
     }
