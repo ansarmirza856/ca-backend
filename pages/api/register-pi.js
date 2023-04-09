@@ -16,7 +16,7 @@ export default authMiddleware(async function handler(req, res) {
         await userTaxApplication.findOneAndUpdate(
           { formId },
           {
-            pe: 1,
+            pi: 1,
             applicationStatus: "in progress",
             ...req.body,
           },
