@@ -37,7 +37,7 @@ export const Input = styled.input`
   outline: none;
   padding: 0 20px;
   margin-bottom: 20px;
-  transition: all 0.3s ease-in-out;
+  transition: border 0.3s ease-in-out;
 
   &::placeholder {
     color: #b0b7c3;
@@ -64,6 +64,30 @@ export const Button = styled.button`
   &:hover {
     background: linear-gradient(272.06deg, #6e69cd 0.26%, #19b8ac 101.32%);
   }
+`;
+
+export const LoginPropOne = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
+  user-select: none;
+  pointer-events: none;
+`;
+
+export const LoginPropTwo = styled.img`
+  position: absolute;
+  bottom: 10%;
+  left: 0;
+  user-select: none;
+  pointer-events: none;
+`;
+
+export const LoginPropThree = styled.img`
+  position: absolute;
+  top: 10%;
+  right: 0;
+  user-select: none;
+  pointer-events: none;
 `;
 
 const login = () => {
@@ -106,6 +130,9 @@ const login = () => {
 
   return (
     <Container>
+      <LoginPropOne src="/images/login-prop-1.svg" />
+      <LoginPropTwo src="/images/login-prop-2.svg" />
+      <LoginPropThree src="/images/login-prop-3.svg" />
       <Logo src="/images/logo.svg" />
       <Form onSubmit={handleSubmit}>
         <Input
