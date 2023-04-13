@@ -14,19 +14,13 @@ const authMiddleware = (handler, requireAdmin = false) => {
     }
 
     try {
-      const decoded = jwt.decode(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
       if (requireAdmin && !decoded.isAdmin) {
         return res.status(403).json({ success: false, error: "Forbidden" });
       }
 
       const userEmail = decoded.email;
-
-      const unixTimestampCre = decoded.iat;
-      const date = new Date(unixTimestampCre * 1000).toUTCString();
-
-      const unixTimestampUp = decoded.iat;
-      const date1 = new Date(unixTimestampUp * 1000).toUTCString();
 
       const user = await User.findOne({ email: userEmail });
 
