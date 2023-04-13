@@ -73,7 +73,7 @@ export default async function handler(req, res) {
       } else if (action === "user-files") {
         const userTaxApplication = await UserTaxApplication.findOneAndUpdate(
           { formId: formId },
-          { deliveryFiles: uploadedFiles, applicationStatus: "in review" },
+          { userAttachedFiles: uploadedFiles, applicationStatus: "in review" },
           { new: true }
         );
 
