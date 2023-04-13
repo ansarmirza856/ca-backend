@@ -6,7 +6,11 @@ const authMiddleware = (handler, requireAdmin = false) => {
     const token = req.headers.authorization?.split(" ")[1];
 
     if (!token) {
-      return res.status(401).json({ success: false, error: "Unauthorized" });
+      return res.status(401).json({
+        success: false,
+        error: "Unauthorized",
+        message: "No token provided",
+      });
     }
 
     try {
@@ -32,7 +36,9 @@ const authMiddleware = (handler, requireAdmin = false) => {
 
       return handler(req, res);
     } catch (error) {
-      return res.status(401).json({ success: false, error: "Unauthorized" });
+      return res
+        .status(401)
+        .json({ success: false, error: "Unauthorized", message: error });
     }
   };
 };
