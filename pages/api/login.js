@@ -8,7 +8,9 @@ export default async (req, res) => {
     await connectDB();
 
     if (!req.body.email || !req.body.password) {
-      return res.status(400).json({ message: "Please fill all fields" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Please fill all fields" });
     }
 
     const { email, password } = req.body;
@@ -17,31 +19,41 @@ export default async (req, res) => {
       const user = await User.findOne({ email });
 
       if (user.isEmailVerified === false) {
-        return res.status(401).json({ message: "Please verify your email" });
+        return res
+          .status(401)
+          .json({ success: false, message: "Please verify your email" });
       }
 
       if (!user) {
-        return res.status(401).json({ message: "Invalid email or password" });
+        return res
+          .status(401)
+          .json({ success: false, message: "Invalid email or password" });
       }
 
       const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (!passwordMatch) {
-        return res.status(401).json({ message: "Invalid email or password" });
+        return res
+          .status(401)
+          .json({ success: false, message: "Invalid email or password" });
       }
 
       const token = jwt.sign(
         { email: email, isAdmin: user.isAdmin },
         process.env.JWT_SECRET,
         {
-          expiresIn: 86400,
+          //seconds in 30 days
+          expiresIn: 2592000,
         }
       );
 
       const refreshToken = jwt.sign(
         { email },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: 604800 }
+        {
+          //seconds in 60 days
+          expiresIn: 5184000,
+        }
       );
 
       const {
@@ -69,9 +81,11 @@ export default async (req, res) => {
       });
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ message: "Internal server error" });
+      return res
+        .status(500)
+        .json({ success: false, message: "Internal server error" });
     }
   } else {
-    return res.status(400).json({ message: "Invalid request" });
+    return res.status(400).json({ success: false, message: "Invalid request" });
   }
 };

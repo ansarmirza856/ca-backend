@@ -41,7 +41,9 @@ export default async (req, res) => {
       const existingUser = await User.findOne({ email });
 
       if (existingUser) {
-        return res.status(409).json({ message: "User already exists" });
+        return res
+          .status(409)
+          .json({ success: false, message: "User already exists" });
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -59,7 +61,9 @@ export default async (req, res) => {
       // Send the OTP email
       const result = await apiInstance.sendTransacEmail(sendSmtpEmail);
 
-      return res.status(200).json({ message: "OTP sent successfully" });
+      return res
+        .status(200)
+        .json({ success: true, message: "OTP sent successfully" });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: "Internal server error" });
