@@ -17,6 +17,12 @@ export default async (req, res) => {
 
     try {
       const user = await User.findOne({ email });
+      
+         if (!user) {
+        return res
+          .status(401)
+          .json({ success: false, message: "Invalid email or password" });
+      }
 
       if (user.isEmailVerified === false) {
         return res
@@ -24,11 +30,7 @@ export default async (req, res) => {
           .json({ success: false, message: "Please verify your email" });
       }
 
-      if (!user) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Invalid email or password" });
-      }
+   
 
       const passwordMatch = await bcrypt.compare(password, user.password);
 
