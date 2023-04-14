@@ -107,6 +107,7 @@ export default authMiddleware(async function handler(req, res) {
       let incomeTax = 0;
       let incomeTaxHigher = 0;
       let incomeTaxAdditional = 0;
+      let balancingAmount = 0;
 
       if (totalGrantSe) {
         profit = profit + totalGrantSe;
@@ -182,6 +183,13 @@ export default authMiddleware(async function handler(req, res) {
           let incomeTaxAmount = incomeTaxableProfit * 0.45;
           totalTax += incomeTaxAmount;
           incomeTaxAdditional = incomeTaxAmount;
+        }
+
+        if (totalTax > 1000) {
+          let taxableAmount = totalTax - CLASS_2_FIXED_VALUE;
+          let balancingCharge = taxableAmount / 2;
+          totalTax += balancingCharge;
+          balancingAmount = balancingCharge;
         }
       }
       const class2Rounded = Number(class2.toFixed(2));
