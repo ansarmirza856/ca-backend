@@ -91,8 +91,10 @@ export default authMiddleware(async function handler(req, res) {
           return acc + cur;
         }, 0);
 
-      const CLASS_2_FIXED_VALUE = 158;
-      const CLASS_4_TAX_PERCENTAGE = 0.09;
+      const CLASS_2_FIXED_VALUE = 168.8;
+      const CLASS_4_TAX_PERCENTAGE = 0.0973;
+      const CLASS_4_TAX_PERCENTAGE_HIGHER = 0.0273;
+      const PERSONAL_ALLOWANCE_AMOUNT = 12500;
       const INCOME_TAX_PERCENTAGE = 0.2;
       let totalIncome = 0;
       let totalExpenses = 0;
@@ -101,7 +103,10 @@ export default authMiddleware(async function handler(req, res) {
       let totalTax = 0;
       let class2 = 0;
       let class4 = 0;
+      let class4Higher = 0;
       let incomeTax = 0;
+      let incomeTaxHigher = 0;
+      let incomeTaxAdditional = 0;
 
       if (totalGrantSe) {
         profit = profit + totalGrantSe;
@@ -133,23 +138,50 @@ export default authMiddleware(async function handler(req, res) {
 
       profit = Number((totalIncome - totalExpenses - totalTaxPaid).toFixed(2));
 
-      if (profit < 6000) {
+      if (profit < 6515) {
         totalTax = 0;
-      } else if (profit >= 6000 && profit <= 8999) {
+      } else if (profit >= 6515 && profit <= 11908) {
+        totalTax = 0;
+      } else if (profit >= 11909) {
         totalTax += CLASS_2_FIXED_VALUE;
-        class2 = totalTax;
-      } else if (profit >= 9000 && profit <= 45000) {
-        let taxableProfit = profit - 9000;
-        let class4Tax = taxableProfit * CLASS_4_TAX_PERCENTAGE;
-        totalTax += class4Tax + CLASS_2_FIXED_VALUE;
         class2 = CLASS_2_FIXED_VALUE;
-        class4 = class4Tax;
+        let taxableProfit = profit - PERSONAL_ALLOWANCE_AMOUNT;
+        if (profit <= 50270) {
+          let class4Tax = taxableProfit * CLASS_4_TAX_PERCENTAGE;
+          totalTax += class4Tax;
+          class4 = class4Tax;
+        }
 
-        if (profit > 12500) {
-          let incomeTaxableProfit = profit - 12500;
+        if (profit > 50270) {
+          let class4Tax = taxableProfit * CLASS_4_TAX_PERCENTAGE;
+          totalTax += class4Tax;
+          class4 = class4Tax;
+
+          let class4TaxHigher =
+            (profit - 50270) * CLASS_4_TAX_PERCENTAGE_HIGHER;
+          totalTax += class4TaxHigher;
+          class4Higher = class4TaxHigher;
+        }
+
+        if (profit > 12570 && profit <= 37700) {
+          let incomeTaxableProfit = profit - PERSONAL_ALLOWANCE_AMOUNT;
           let incomeTaxAmount = incomeTaxableProfit * INCOME_TAX_PERCENTAGE;
           totalTax += incomeTaxAmount;
           incomeTax = incomeTaxAmount;
+        }
+
+        if (profit >= 37701 && profit <= 150000) {
+          let incomeTaxableProfit = profit - 37700;
+          let incomeTaxAmount = incomeTaxableProfit * 0.4;
+          totalTax += incomeTaxAmount;
+          incomeTaxHigher = incomeTaxAmount;
+        }
+
+        if (profit > 150000) {
+          let incomeTaxableProfit = profit - 150000;
+          let incomeTaxAmount = incomeTaxableProfit * 0.45;
+          totalTax += incomeTaxAmount;
+          incomeTaxAdditional = incomeTaxAmount;
         }
       }
       const class2Rounded = Number(class2.toFixed(2));
