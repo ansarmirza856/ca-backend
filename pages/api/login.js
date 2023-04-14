@@ -42,8 +42,8 @@ export default async (req, res) => {
         { email: email, isAdmin: user.isAdmin },
         process.env.JWT_SECRET,
         {
-          //seconds in 30 days
-          expiresIn: 2592000,
+          //seconds in 10 days
+          expiresIn: 864000,
         }
       );
 
@@ -51,8 +51,8 @@ export default async (req, res) => {
         { email },
         process.env.REFRESH_TOKEN_SECRET,
         {
-          //seconds in 60 days
-          expiresIn: 5184000,
+          //seconds in 15 days
+          expiresIn: 1296000,
         }
       );
 
@@ -83,7 +83,7 @@ export default async (req, res) => {
       console.error(error);
       return res
         .status(500)
-        .json({ success: false, message: "Internal server error", error: error });
+        .json({ success: false, message: "Internal server error" });
     }
   } else {
     return res.status(400).json({ success: false, message: "Invalid request" });
