@@ -163,35 +163,38 @@ export default authMiddleware(async function handler(req, res) {
           totalTax += class4TaxHigher;
           class4Higher = class4TaxHigher;
         }
-
-        if (profit > 12570 && profit <= 37700) {
-          let incomeTaxableProfit = profit - PERSONAL_ALLOWANCE_AMOUNT;
-          let incomeTaxAmount = incomeTaxableProfit * INCOME_TAX_PERCENTAGE;
-          totalTax += incomeTaxAmount;
-          incomeTax = incomeTaxAmount;
-        }
-
-        if (profit >= 37701 && profit <= 150000) {
-          let incomeTaxableProfit = profit - 37700;
-          let incomeTaxAmount = incomeTaxableProfit * 0.4;
-          totalTax += incomeTaxAmount;
-          incomeTaxHigher = incomeTaxAmount;
-        }
-
-        if (profit > 150000) {
-          let incomeTaxableProfit = profit - 150000;
-          let incomeTaxAmount = incomeTaxableProfit * 0.45;
-          totalTax += incomeTaxAmount;
-          incomeTaxAdditional = incomeTaxAmount;
-        }
-
-        if (totalTax > 1000) {
-          let taxableAmount = totalTax - CLASS_2_FIXED_VALUE;
-          let balancingCharge = taxableAmount / 2;
-          totalTax += balancingCharge;
-          balancingAmount = balancingCharge;
-        }
       }
+
+      if (profit > 12570 && profit <= 37700) {
+        let incomeTaxableProfit = profit - PERSONAL_ALLOWANCE_AMOUNT;
+        let incomeTaxAmount = incomeTaxableProfit * INCOME_TAX_PERCENTAGE;
+        totalTax += incomeTaxAmount;
+        incomeTax = incomeTaxAmount;
+      }
+
+      if (profit >= 37701 && profit <= 150000) {
+        let incomeTaxableProfit = profit - 37700;
+        let incomeTaxAmount = incomeTaxableProfit * 0.4;
+        totalTax += incomeTaxAmount;
+        incomeTax += incomeTaxAmount;
+        incomeTaxHigher = incomeTaxAmount;
+      }
+
+      if (profit > 150000) {
+        let incomeTaxableProfit = profit - 150000;
+        let incomeTaxAmount = incomeTaxableProfit * 0.45;
+        totalTax += incomeTaxAmount;
+        incomeTax += incomeTaxAmount;
+        incomeTaxAdditional = incomeTaxAmount;
+      }
+
+      if (totalTax > 1000) {
+        let taxableAmount = totalTax - CLASS_2_FIXED_VALUE;
+        let balancingCharge = taxableAmount / 2;
+        totalTax += balancingCharge;
+        balancingAmount = balancingCharge;
+      }
+
       const class2Rounded = Number(class2.toFixed(2));
       const class4Rounded = Number(class4.toFixed(2));
       incomeTax = Number(incomeTax.toFixed(2));
