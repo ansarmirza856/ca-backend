@@ -66,7 +66,7 @@ export default async function handler(req, res) {
         fileName: files.req.fileName,
         fileUrl: files.req.uri,
       });
-    });
+    }); // <- added closing bracket here
   } else {
     res.status(400).json({ success: false });
   }
