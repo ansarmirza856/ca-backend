@@ -71,6 +71,9 @@ export default async function handler(req, res) {
             .json({ success: false, error: "No form found" });
         }
       } else if (action === "user-files") {
+        
+        return res.status(200).json({formId: formId, action: action  });
+        
         const userTaxApplication = await UserTaxApplication.findOneAndUpdate(
           { formId: formId },
           { userAttachedFiles: uploadedFiles, applicationStatus: "in review" },
