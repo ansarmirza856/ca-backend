@@ -24,11 +24,11 @@ export default async (req, res) => {
           .json({ success: false, message: "Invalid email or password" });
       }
 
-      if (user.isEmailVerified === false) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Please verify your email" });
-      }
+//       if (user.isEmailVerified === false) {
+//         return res
+//           .status(401)
+//           .json({ success: false, message: "Please verify your email" });
+//       }
 
    
 
