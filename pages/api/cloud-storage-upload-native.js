@@ -28,7 +28,7 @@ export default async function handler(req, res) {
       const formId = req.body.formId;
 
       const fileName =
-        uuidv4().slice(0, 10).split("-").join("") + "-" + req.files.fileName;
+        uuidv4().slice(0, 10).split("-").join("") + "-" + req.file.originalname;
 
       const s3 = new AWS.S3({
         region: process.env.CLOUD_REGION,
@@ -39,14 +39,14 @@ export default async function handler(req, res) {
       const params = {
         Bucket: process.env.CLOUD_BUCKET_NAME,
         Key: fileName,
-        Body: Buffer(req.files.uri),
-        ContentType: req.files.type,
+        Body: req.file.uri,
+        ContentType: req.file.mimetype,
       };
 
-      s3.putObject(params).promise();
+      await s3.putObject(params).promise();
 
       uploadedFiles.push({
-        name: req.files.fileName,
+        name: req.file.originalname,
         key: fileName,
       });
 
@@ -63,10 +63,10 @@ export default async function handler(req, res) {
       res.status(200).json({
         success: true,
         message: "File uploaded successfully",
-        fileName: files.req.fileName,
-        fileUrl: files.req.uri,
+        fileName: req.file.originalname,
+        fileUrl: `https://${process.env.CLOUD_BUCKET_NAME}.s3.${process.env.CLOUD_REGION}.amazonaws.com/${fileName}`,
       });
-    }); // <- added closing bracket here
+    });
   } else {
     res.status(400).json({ success: false });
   }
