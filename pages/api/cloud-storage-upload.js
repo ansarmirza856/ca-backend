@@ -72,7 +72,7 @@ export default async function handler(req, res) {
         }
       } else if (action === "user-files") {
         
-        return res.status(200).json({formId: formId, action: action, files: files  });
+        return res.status(200).json({formId: formId, action: action, files: req.files  });
         
         const userTaxApplication = await UserTaxApplication.findOneAndUpdate(
           { formId: formId },
