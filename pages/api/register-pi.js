@@ -28,7 +28,7 @@ export default authMiddleware(async function handler(req, res) {
       res.status(200).json(savedPersonalInformation);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: "Internal server error", error: error });
     }
   } else {
     res.status(400).json({ success: false });
