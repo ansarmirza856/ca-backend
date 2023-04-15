@@ -40,7 +40,7 @@ export default async function handler(req, res) {
         });
         
         
-         if(action === "delivery-files"){
+        
            
            const fileName =
           uuidv4().slice(0, 10).split("-").join("") +
@@ -53,12 +53,9 @@ export default async function handler(req, res) {
           Body: req.files[i].buffer,
           ContentType: req.files[i].mimetype,
         };
-         }else if(action === "user-files"){
+     
            
-           const fileName =
-          uuidv4().slice(0, 10).split("-").join("") +
-          "-" +
-          req.files[i].fileName;
+
            
          const params = {
           Bucket: process.env.CLOUD_BUCKET_NAME,
@@ -67,7 +64,7 @@ export default async function handler(req, res) {
           ContentType: req.files[i].type,
         };
          
-         }
+        
 
         s3.putObject(params).promise();
 
