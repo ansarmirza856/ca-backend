@@ -24,13 +24,6 @@ export default async (req, res) => {
           .json({ success: false, message: "Invalid email or password" });
       }
 
-//       if (user.isEmailVerified === false) {
-//         return res
-//           .status(401)
-//           .json({ success: false, message: "Please verify your email" });
-//       }
-
-   
 
       const passwordMatch = await bcrypt.compare(password, user.password);
 
@@ -67,6 +60,24 @@ export default async (req, res) => {
         lastName,
         phone,
       } = user;
+      
+    if (user.isEmailVerified === false) {
+        return res
+          .status(401)
+          .json({ success: false, 
+                 
+          user: {
+          id: _id,
+          email: userEmail,
+          isEmailVerified,
+          isAdmin: isAdmin,
+          firstName: firstName,
+          lastName: lastName,
+          phone: phone,
+        },
+                
+        });
+      }
 
       return res.status(200).json({
         token,
