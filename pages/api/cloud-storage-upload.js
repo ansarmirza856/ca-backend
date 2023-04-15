@@ -29,42 +29,23 @@ export default async function handler(req, res) {
       const action = req.body.action;
 
       for (let i = 0; i < req.files.length; i++) {
-        
-        
-        
+        const fileName =
+          uuidv4().slice(0, 10).split("-").join("") +
+          "-" +
+          req.files[i].originalname;
 
         const s3 = new AWS.S3({
           region: process.env.CLOUD_REGION,
           accessKeyId: process.env.CLOUD_ACCESS_KEY_ID,
           secretAccessKey: process.env.CLOUD_ACCESS_KEY_SECRET,
         });
-        
-        
-        
-           
-           const fileName =
-          uuidv4().slice(0, 10).split("-").join("") +
-          "-" +
-          req.files[i].originalname;
-           
+
         const params = {
           Bucket: process.env.CLOUD_BUCKET_NAME,
           Key: fileName,
           Body: req.files[i].buffer,
           ContentType: req.files[i].mimetype,
         };
-     
-           
-
-           
-         const params = {
-          Bucket: process.env.CLOUD_BUCKET_NAME,
-          Key: fileName,
-          Body: req.files[i].uri,
-          ContentType: req.files[i].type,
-        };
-         
-        
 
         s3.putObject(params).promise();
 
@@ -90,7 +71,6 @@ export default async function handler(req, res) {
             .json({ success: false, error: "No form found" });
         }
       } else if (action === "user-files") {
-        
         const userTaxApplication = await UserTaxApplication.findOneAndUpdate(
           { formId: formId },
           { userAttachedFiles: uploadedFiles, applicationStatus: "in review" },
