@@ -10,7 +10,7 @@ export default authMiddleware(async function handler(req, res) {
 
       let formId = req.body.formId;
 
-      if (formId === "generate_new_id") {
+      if (formId === "" || formId === undefined) {
         formId = "CA-" + uuidv4().substring(0, 16);
       }
 
