@@ -18,16 +18,18 @@ const upload = multer({
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
-    upload.single("file")(req, res, async (err) => {
+    upload.single("photo")(req, res, async (err) => {
       // if (err) {
       //   console.error("Error uploading file:", err);
       //   return res.status(400).json({ error: "Failed to upload file" });
       // }
 
-      // return res.status(200).json({ success: true, message: req.body.formId });
+      return res
+        .status(200)
+        .json({ success: true, body: req.body, file: req.file });
 
-      const uploadedFiles = [];
-      const formId = req.body.formId;
+      // const uploadedFiles = [];
+      // const formId = req.body.formId;
 
       // const fileName =
       //   uuidv4().slice(0, 10).split("-").join("") + "-" + req.file.originalname;
@@ -38,26 +40,26 @@ export default async function handler(req, res) {
       //   secretAccessKey: process.env.CLOUD_ACCESS_KEY_SECRET,
       // });
 
-      const params = {
-        Bucket: process.env.CLOUD_BUCKET_NAME,
-        Key: req.body.file.fileName,
-        Body: req.body.file.uri,
-        ContentType: req.body.file.type,
-      };
+      // const params = {
+      //   Bucket: process.env.CLOUD_BUCKET_NAME,
+      //   Key: req.body.file.fileName,
+      //   Body: req.body.file.uri,
+      //   ContentType: req.body.file.type,
+      // };
 
-      await s3.putObject(params).promise();
+      // await s3.putObject(params).promise();
 
-      uploadedFiles.push({
-        name: req.file.originalname,
-        key: fileName,
-      });
+      // uploadedFiles.push({
+      //   name: req.file.originalname,
+      //   key: fileName,
+      // });
 
-      return res.status(200).json({
-        success: true,
-        message: "File uploaded successfully",
-        fileName: req.file.fileName,
-        fileUrl: `https://${process.env.CLOUD_BUCKET_NAME}.s3.${process.env.CLOUD_REGION}.amazonaws.com/${fileName}`,
-      });
+      // return res.status(200).json({
+      //   success: true,
+      //   message: "File uploaded successfully",
+      //   fileName: req.file.fileName,
+      //   fileUrl: `https://${process.env.CLOUD_BUCKET_NAME}.s3.${process.env.CLOUD_REGION}.amazonaws.com/${fileName}`,
+      // });
 
       // const userTaxApplication = await UserTaxApplication.findOneAndUpdate(
       //   { formId: formId },
