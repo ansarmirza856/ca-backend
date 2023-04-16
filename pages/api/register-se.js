@@ -8,18 +8,20 @@ export default authMiddleware(async function handler(req, res) {
     try {
       await connectDB();
 
+      let newFormId = "";
+
       const uniqueId = "CA-" + uuidv4().substring(0, 16);
 
-      let { formId } = req.body;
+      newFormId = req.body;
 
-      if (!formId || formId === "") {
-        formId = uniqueId;
+      if (!newFormId || newFormId === "") {
+        newFormId = uniqueId;
       }
 
       const savedSelfEmployments = await userTaxApplication.findOneAndUpdate(
-        { formId: formId },
+        { formId: newFormId },
         {
-          formId: formId,
+          formId: newFormId,
           applicationStatus: "pending",
           firstName: req.user.firstName,
           lastName: req.user.lastName,
