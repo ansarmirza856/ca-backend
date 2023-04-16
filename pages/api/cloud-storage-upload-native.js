@@ -24,9 +24,9 @@ export default async function handler(req, res) {
       //   return res.status(400).json({ error: "Failed to upload file" });
       // }
 
-      return res
-        .status(200)
-        .json({ success: true, body: req.body, file: req.file });
+      // return res
+      //   .status(200)
+      //   .json({ success: true, body: req.body, file: req.file });
 
       const uploadedFiles = [];
       const formId = req.body.formId;
