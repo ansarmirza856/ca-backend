@@ -7,7 +7,12 @@ export default authMiddleware(async function handler(req, res) {
   if (req.method === "POST") {
     try {
       await connectDB();
-      const formId = "CA-" + uuidv4().substring(0, 16);
+
+      let formId = req.body.formId;
+
+      if (formId === "generate_new_id") {
+        formId = "CA-" + uuidv4().substring(0, 16);
+      }
 
       const savedSelfEmployments = await userTaxApplication.findOneAndUpdate(
         { formId: formId },
