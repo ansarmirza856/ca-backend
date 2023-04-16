@@ -13,13 +13,9 @@ export default authMiddleware(async function handler(req, res) {
       //create payment intent
       const paymentIntent = await stripe.paymentIntents.create({
         amount: req.body.amount,
-        currency: "gpb",
+        currency: "gbp",
         payment_method_types: ["card"],
         receipt_email: req.user.email,
-        shipping: {
-          name: "Jenny Rosen",
-          address: {},
-        },
       });
 
       res
@@ -34,7 +30,7 @@ export default authMiddleware(async function handler(req, res) {
       //   );
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: "Internal server error", log: error });
     }
   } else {
     res.status(400).json({ success: false });
