@@ -28,38 +28,38 @@ export default async function handler(req, res) {
         .status(200)
         .json({ success: true, body: req.body, file: req.file });
 
-      // const uploadedFiles = [];
-      // const formId = req.body.formId;
+      const uploadedFiles = [];
+      const formId = req.body.formId;
 
       // const fileName =
       //   uuidv4().slice(0, 10).split("-").join("") + "-" + req.file.originalname;
 
-      // const s3 = new AWS.S3({
-      //   region: process.env.CLOUD_REGION,
-      //   accessKeyId: process.env.CLOUD_ACCESS_KEY_ID,
-      //   secretAccessKey: process.env.CLOUD_ACCESS_KEY_SECRET,
-      // });
+      const s3 = new AWS.S3({
+        region: process.env.CLOUD_REGION,
+        accessKeyId: process.env.CLOUD_ACCESS_KEY_ID,
+        secretAccessKey: process.env.CLOUD_ACCESS_KEY_SECRET,
+      });
 
-      // const params = {
-      //   Bucket: process.env.CLOUD_BUCKET_NAME,
-      //   Key: req.body.file.fileName,
-      //   Body: req.body.file.uri,
-      //   ContentType: req.body.file.type,
-      // };
+      const params = {
+        Bucket: process.env.CLOUD_BUCKET_NAME,
+        Key: req.file.originalname,
+        Body: reqq.file.buffer,
+        ContentType: req.file.mimetype,
+      };
 
-      // await s3.putObject(params).promise();
+      await s3.putObject(params).promise();
 
-      // uploadedFiles.push({
-      //   name: req.file.originalname,
-      //   key: fileName,
-      // });
+      uploadedFiles.push({
+        name: req.file.originalname,
+        key: req.file.originalname,
+      });
 
-      // return res.status(200).json({
-      //   success: true,
-      //   message: "File uploaded successfully",
-      //   fileName: req.file.fileName,
-      //   fileUrl: `https://${process.env.CLOUD_BUCKET_NAME}.s3.${process.env.CLOUD_REGION}.amazonaws.com/${fileName}`,
-      // });
+      return res.status(200).json({
+        success: true,
+        message: "File uploaded successfully",
+        fileName: req.file.originalname,
+        fileUrl: `https://${process.env.CLOUD_BUCKET_NAME}.s3.${process.env.CLOUD_REGION}.amazonaws.com/${req.file.originalname}`,
+      });
 
       // const userTaxApplication = await UserTaxApplication.findOneAndUpdate(
       //   { formId: formId },
