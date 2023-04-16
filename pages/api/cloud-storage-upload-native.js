@@ -52,7 +52,7 @@ export default async function handler(req, res) {
 
       const userTaxApplication = await UserTaxApplication.findOneAndUpdate(
         { formId: formId },
-        { userAttachedFiles: uploadedFiles, applicationStatus: "in review" },
+        { userAttachedFiles: uploadedFiles, applicationStatus: "in process" },
         { new: true }
       );
 
