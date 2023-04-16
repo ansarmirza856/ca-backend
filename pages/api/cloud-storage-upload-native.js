@@ -19,12 +19,12 @@ const upload = multer({
 export default async function handler(req, res) {
   if (req.method === "POST") {
     upload.single("files")(req, res, async (err) => {
-      if (err) {
-        console.error("Error uploading file:", err);
-        return res.status(400).json({ error: "Failed to upload file" });
-      }
+      // if (err) {
+      //   console.error("Error uploading file:", err);
+      //   return res.status(400).json({ error: "Failed to upload file" });
+      // }
 
-      return res.status(200).json({ success: true, message: req });
+      return res.status(200).json({ success: true, message: req.body });
 
       // const uploadedFiles = [];
       // const formId = req.body.formId;
