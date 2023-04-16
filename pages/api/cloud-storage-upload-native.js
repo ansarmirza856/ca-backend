@@ -43,7 +43,7 @@ export default async function handler(req, res) {
       const params = {
         Bucket: process.env.CLOUD_BUCKET_NAME,
         Key: req.file.originalname,
-        Body: reqq.file.buffer,
+        Body: req.file.buffer,
         ContentType: req.file.mimetype,
       };
 
