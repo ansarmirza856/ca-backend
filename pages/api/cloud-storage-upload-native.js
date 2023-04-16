@@ -24,48 +24,50 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Failed to upload file" });
       }
 
-      const uploadedFiles = [];
-      const formId = req.body.formId;
+      return res.status(200).json({ success: true, message: req });
 
-      const fileName =
-        uuidv4().slice(0, 10).split("-").join("") + "-" + req.file.originalname;
+      // const uploadedFiles = [];
+      // const formId = req.body.formId;
 
-      const s3 = new AWS.S3({
-        region: process.env.CLOUD_REGION,
-        accessKeyId: process.env.CLOUD_ACCESS_KEY_ID,
-        secretAccessKey: process.env.CLOUD_ACCESS_KEY_SECRET,
-      });
+      // const fileName =
+      //   uuidv4().slice(0, 10).split("-").join("") + "-" + req.file.originalname;
 
-      const params = {
-        Bucket: process.env.CLOUD_BUCKET_NAME,
-        Key: fileName,
-        Body: req.file.uri,
-        ContentType: req.file.mimetype,
-      };
+      // const s3 = new AWS.S3({
+      //   region: process.env.CLOUD_REGION,
+      //   accessKeyId: process.env.CLOUD_ACCESS_KEY_ID,
+      //   secretAccessKey: process.env.CLOUD_ACCESS_KEY_SECRET,
+      // });
 
-      await s3.putObject(params).promise();
+      // const params = {
+      //   Bucket: process.env.CLOUD_BUCKET_NAME,
+      //   Key: fileName,
+      //   Body: req.file.uri,
+      //   ContentType: req.file.mimetype,
+      // };
 
-      uploadedFiles.push({
-        name: req.file.originalname,
-        key: fileName,
-      });
+      // await s3.putObject(params).promise();
 
-      const userTaxApplication = await UserTaxApplication.findOneAndUpdate(
-        { formId: formId },
-        { userAttachedFiles: uploadedFiles, applicationStatus: "in review" },
-        { new: true }
-      );
+      // uploadedFiles.push({
+      //   name: req.file.originalname,
+      //   key: fileName,
+      // });
 
-      if (!userTaxApplication) {
-        return res.status(404).json({ success: false, error: "No form found" });
-      }
+      // const userTaxApplication = await UserTaxApplication.findOneAndUpdate(
+      //   { formId: formId },
+      //   { userAttachedFiles: uploadedFiles, applicationStatus: "in review" },
+      //   { new: true }
+      // );
 
-      res.status(200).json({
-        success: true,
-        message: "File uploaded successfully",
-        fileName: req.file.originalname,
-        fileUrl: `https://${process.env.CLOUD_BUCKET_NAME}.s3.${process.env.CLOUD_REGION}.amazonaws.com/${fileName}`,
-      });
+      // if (!userTaxApplication) {
+      //   return res.status(404).json({ success: false, error: "No form found" });
+      // }
+
+      // res.status(200).json({
+      //   success: true,
+      //   message: "File uploaded successfully",
+      //   fileName: req.file.originalname,
+      //   fileUrl: `https://${process.env.CLOUD_BUCKET_NAME}.s3.${process.env.CLOUD_REGION}.amazonaws.com/${fileName}`,
+      // });
     });
   } else {
     res.status(400).json({ success: false });
