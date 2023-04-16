@@ -12,9 +12,13 @@ export default authMiddleware(async function handler(req, res) {
 
       const uniqueId = "CA-" + uuidv4().substring(0, 16);
 
-      newFormId = req.body.formId;
-
-      if (!newFormId || newFormId === "") {
+      if (
+        req.body.formId &&
+        typeof req.body.formId === "string" &&
+        req.body.formId.trim() !== ""
+      ) {
+        newFormId = req.body.formId.trim();
+      } else {
         newFormId = uniqueId;
       }
 
