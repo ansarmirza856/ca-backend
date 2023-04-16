@@ -25,13 +25,13 @@ export default authMiddleware(async function handler(req, res) {
       const savedSelfEmployments = await userTaxApplication.findOneAndUpdate(
         { formId: newFormId },
         {
-          formId: newFormId,
           applicationStatus: "pending",
           firstName: req.user.firstName,
           lastName: req.user.lastName,
           userEmail: req.user.email,
           dateSubmitted: new Date(),
           ...req.body,
+          formId: newFormId,
         },
         { new: true, upsert: true }
       );
