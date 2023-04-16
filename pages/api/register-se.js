@@ -12,7 +12,7 @@ export default authMiddleware(async function handler(req, res) {
 
       const uniqueId = "CA-" + uuidv4().substring(0, 16);
 
-      newFormId = req.body;
+      newFormId = req.body.formId;
 
       if (!newFormId || newFormId === "") {
         newFormId = uniqueId;
@@ -31,10 +31,12 @@ export default authMiddleware(async function handler(req, res) {
         },
         { new: true, upsert: true }
       );
-      res.status(200).json({ success: true, formId, savedSelfEmployments });
+      res.status(200).json({ success: true, newFormId, savedSelfEmployments });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Internal server error" });
+      res
+        .status(500)
+        .json({ error: "Internal server error", ExactError: error });
     }
   } else {
     res.status(400).json({ success: false });
