@@ -28,10 +28,12 @@ export default authMiddleware(async function handler(req, res) {
     const { formId, accountancyFee, firstName, lastName, userEmail } =
       getUserApplication;
 
+    const amount = Number(accountancyFee * 100);
+
     try {
       //create payment intent
       const paymentIntent = await stripe.paymentIntents.create({
-        amount: accountancyFee * 100,
+        amount: amount,
         currency: "gbp",
         payment_method_types: ["card"],
         receipt_email: userEmail,
