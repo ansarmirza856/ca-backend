@@ -62,7 +62,7 @@ export default async (req, res) => {
 
       if (user.isEmailVerified === false) {
         return res.status(401).json({
-          success: false,
+          success: true,
 
           user: {
             id: _id,
