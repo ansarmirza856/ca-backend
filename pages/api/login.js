@@ -24,12 +24,13 @@ export default async (req, res) => {
           .json({ success: false, message: "Invalid email or password" });
       }
 
-      const passwordMatch = await bcrypt.compare(password, user.password);
-
-      if (!passwordMatch) {
-        return res
-          .status(401)
-          .json({ success: false, message: "Invalid email or password" });
+      if (user && user.isEmailVerified === true) {
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (!passwordMatch) {
+          return res
+            .status(401)
+            .json({ success: false, message: "Invalid email or password" });
+        }
       }
 
       const token = jwt.sign(
