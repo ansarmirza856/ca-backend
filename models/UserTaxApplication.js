@@ -13,6 +13,11 @@ const userTaxApplicationSchema = new mongoose.Schema({
   totalTaxPaid: { type: Number, required: true },
   paymentStatus: { type: String, required: true },
   applicationStatus: { type: String, required: true },
+  paymentIntent: { type: String, required: true },
+  amendmementRequest: {
+    requested: { type: Boolean, required: true, default: false },
+    reason: { type: String, required: true },
+  },
   dateSubmitted: { type: Date, required: true },
   firstName: { type: String },
   lastName: { type: String },
