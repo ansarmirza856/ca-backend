@@ -132,7 +132,7 @@ const userTaxApplicationSchema = new mongoose.Schema({
       dateOfBirth: { type: String, required: true },
       uTrNumber: { type: Number, required: true },
       nInumber: { type: String, required: true },
-      currenctAddress: {
+      currentAddress: {
         addressLine1: { type: String },
         addressLine2: { type: String },
         town: { type: String },
