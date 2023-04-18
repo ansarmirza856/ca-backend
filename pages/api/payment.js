@@ -37,24 +37,31 @@ export default authMiddleware(async function handler(req, res) {
         currency: "gbp",
         payment_method_types: ["card"],
         receipt_email: userEmail,
+        metadata: {
+          formId: formId,
+          firstName: firstName,
+          lastName: lastName,
+          userEmail: userEmail,
+        },
       });
+
+      const client_secret = paymentIntent.client_secret;
+
+      const updatedUserApplication = await userTaxApplication.findOneAndUpdate(
+        { formId: req.body.formId },
+        { paymentIntent: client_secret, paymentStatus: "in process" },
+        { new: true }
+      );
 
       res.status(200).json({
         success: true,
-        paymentIntent: paymentIntent.client_secret,
+        paymentIntent: client_secret,
         formId: formId,
         accountancyFee: accountancyFee,
         firstName: firstName,
         lastName: lastName,
         userEmail: userEmail,
       });
-
-      //save payment intent id to db
-      //   const savedSelfEmployments = await userTaxApplication.findOneAndUpdate(
-      //     { formId: newFormId },
-      //     { paymentIntentId: paymentIntent.id },
-      //     { new: true, upsert: true }
-      //   );
     } catch (error) {
       console.error(error);
       res
