@@ -61,7 +61,7 @@ export const SearchIconCont = styled.button`
 export const SearchIcon = styled.img``;
 
 export const NavContainer = styled.div`
-  width: 400px;
+  width: 300px;
   height: 100%;
   display: flex;
   align-items: center;

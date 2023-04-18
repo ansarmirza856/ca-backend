@@ -23,9 +23,13 @@ import {
   SearchResultItemHeader,
 } from "./index.elements";
 
+import { useRouter } from "next/router";
+
 const index = ({ data }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+
+  const router = useRouter();
 
   const handleSearchQuery = (e) => {
     if (e.target.value === "") {
@@ -49,6 +53,19 @@ const index = ({ data }) => {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const logout = async () => {
+    const cookie = document.cookie
+      .split(";")
+      .find((row) => row.trim().startsWith("token="));
+
+    document.cookie = cookie.replace(
+      "token=",
+      "token=;expires=Thu, 01 Jan 1970 00:00:01 GMT;"
+    );
+
+    router.push("/");
   };
 
   return (
@@ -108,7 +125,7 @@ const index = ({ data }) => {
           <NavText>Users</NavText>
         </NavItem>
 
-        <NavItem>
+        {/* <NavItem>
           <NavImg src="/images/nav-item-invoices.svg" />
           <NavText>Invoices</NavText>
         </NavItem>
@@ -116,11 +133,16 @@ const index = ({ data }) => {
         <NavItem>
           <NavImg src="/images/nav-item-email.svg" />
           <NavText>Email</NavText>
-        </NavItem>
+        </NavItem> */}
 
         <NavItem>
           <NavImg src="/images/nav-item-settings.svg" />
           <NavText>Settings</NavText>
+        </NavItem>
+
+        <NavItem onClick={logout}>
+          <NavImg src="/images/admin-logout-icon.svg" />
+          <NavText>Logout</NavText>
         </NavItem>
       </NavContainer>
     </Container>
