@@ -17,13 +17,12 @@ export default async (req, res) => {
 
     try {
       const user = await User.findOne({ email });
-      
-         if (!user) {
+
+      if (!user) {
         return res
           .status(401)
           .json({ success: false, message: "Invalid email or password" });
       }
-
 
       const passwordMatch = await bcrypt.compare(password, user.password);
 
@@ -60,26 +59,25 @@ export default async (req, res) => {
         lastName,
         phone,
       } = user;
-      
-    if (user.isEmailVerified === false) {
-        return res
-          .status(401)
-          .json({ success: false, 
-                 
+
+      if (user.isEmailVerified === false) {
+        return res.status(401).json({
+          success: false,
+
           user: {
-          id: _id,
-          email: userEmail,
-          isEmailVerified,
-          isAdmin: isAdmin,
-          firstName: firstName,
-          lastName: lastName,
-          phone: phone,
-        },
-                
+            id: _id,
+            email: userEmail,
+            isEmailVerified,
+            isAdmin: isAdmin,
+            firstName: firstName,
+            lastName: lastName,
+            phone: phone,
+          },
         });
       }
 
       return res.status(200).json({
+        success: true,
         token,
         refreshToken,
         user: {
