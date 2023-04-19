@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import connectDB from "../../db";
 
 const authMiddleware = (handler, requireAdmin = false) => {
   return async (req, res) => {
@@ -14,6 +15,7 @@ const authMiddleware = (handler, requireAdmin = false) => {
     }
 
     try {
+      connectDB();
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
       if (requireAdmin && decoded.isAdmin == false) {
