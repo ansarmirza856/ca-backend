@@ -34,6 +34,12 @@ const userTaxApplicationSchema = new mongoose.Schema({
       key: { type: String, required: true },
     },
   ],
+  finalDeliveryFiles: [
+    {
+      name: { type: String, required: true },
+      key: { type: String, required: true },
+    },
+  ],
   ApprovedByUser: { type: Boolean, required: true, default: false },
   selfEmployment: [
     {
