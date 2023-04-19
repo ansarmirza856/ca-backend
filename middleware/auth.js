@@ -16,7 +16,7 @@ const authMiddleware = (handler, requireAdmin = false) => {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      if (requireAdmin && !decoded.isAdmin) {
+      if (requireAdmin && decoded.isAdmin == false) {
         return res.status(403).json({ success: false, error: "Forbidden" });
       }
 
