@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
-import UserAttachments from "./UserAttachments";
-import AdminAttachments from "./AdminAttachments";
-import FinalDeliveryAttachment from "./FinalDeliveryAttachments";
-import { useRouter } from "next/router";
 
 import {
   Container,
+  DocumentContainer,
+  SectionTitle,
+  Document,
+  DocumentName,
+  DownloadButton,
   UploadContainer,
   UploadForm,
   UploadField,
@@ -16,18 +17,47 @@ import {
   FileImage,
   FileName,
   SubmitButton,
-  SuccessMessage,
-  ResendButton,
 } from "./index.elements";
-import { toast } from "react-toastify";
 
 const index = ({ data }) => {
   const [file1, setFile1] = useState(null);
   const [file2, setFile2] = useState(null);
   const fileInput1Ref = useRef(null);
   const fileInput2Ref = useRef(null);
-  const router = useRouter();
-  const formId = data.data.formId;
+  const [isLoading, setIsLoading] = useState(false);
+  const handleDownload = async (key, name) => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cloud-storage-download?key=${key}`
+      );
+      if (!response.ok) {
+        throw new Error(
+          `Failed to download file: ${response.status} ${response.statusText}`
+        );
+      }
+
+      const contentDisposition = response.headers.get("Content-Disposition");
+      const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+      const filename = filenameMatch ? filenameMatch[1] : name;
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      setIsLoading(false);
+      document.body.appendChild(link);
+      link.click();
+
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error(error);
+      // Handle any errors that occur during the download
+    }
+  };
 
   const handleFile1Change = (event) => {
     const selectedFile = event.target.files[0];
@@ -88,7 +118,7 @@ const index = ({ data }) => {
         formData.append("files", file2);
       }
       formData.append("formId", formId);
-      formData.append("action", "delivery-files");
+      formData.append("action", "final-delivery-files");
       formData.append("attachment", "multiple");
 
       const response = await fetch("/api/cloud-storage-upload", {
@@ -108,14 +138,24 @@ const index = ({ data }) => {
 
   return (
     <Container>
-      <>
-        <UserAttachments data={data} />
-
+      <SectionTitle>Tax Submission Confirmation docs</SectionTitle>
+      <DocumentContainer>
         {data &&
-        data.data.deliveryFiles.length > 0 &&
-        data.data.amendmementRequest.requested === false ? (
-          <AdminAttachments data={data} />
-        ) : (
+          data.data?.finalDeliveryFiles.length > 0 &&
+          data.data?.finalDeliveryFiles.map((file) => {
+            return (
+              <Document key={file.key}>
+                <DocumentName>{file.name}</DocumentName>
+                <DownloadButton
+                  onClick={() => handleDownload(file.key, file.name)}
+                >
+                  Download
+                </DownloadButton>
+              </Document>
+            );
+          })}
+
+        {data && data.data?.finalDeliveryFiles.length === 0 && (
           <UploadForm onSubmit={handleSubmit}>
             <UploadContainer>
               <UploadInput
@@ -182,16 +222,10 @@ const index = ({ data }) => {
               </UploadField>
             </UploadContainer>
 
-            <SubmitButton type="submit">Send Documents</SubmitButton>
+            <SubmitButton type="submit">Send Submission Proof</SubmitButton>
           </UploadForm>
         )}
-
-        {data &&
-          data.data.amendmementRequest.requested === false &&
-          data.data.ApprovedByUser === true && (
-            <FinalDeliveryAttachment data={data} />
-          )}
-      </>
+      </DocumentContainer>
     </Container>
   );
 };

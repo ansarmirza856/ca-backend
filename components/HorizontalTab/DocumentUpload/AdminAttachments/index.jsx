@@ -47,7 +47,7 @@ const index = ({ data }) => {
 
   return (
     <Container>
-      <SectionTitle>Admin Attached Documents</SectionTitle>
+      <SectionTitle>Tax Return Documents</SectionTitle>
       <DocumentContainer>
         {data &&
           data.data?.deliveryFiles.length > 0 &&
