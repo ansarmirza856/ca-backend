@@ -49,7 +49,7 @@ export const SortByStatus = styled.div`
 
 export const SortItemContainer = styled.div`
   position: absolute;
-  top: 50px;
+  top: 42px;
   right: 0;
   width: 200px;
   height: 200px;
@@ -227,7 +227,7 @@ const Dashboard = () => {
     <Container>
       <Header />
       <SortHeader>
-        <SortByStatus onClick={handleSortSelect}>
+        <SortByStatus onMouseEnter={handleSortSelect}>
           <SortByStatusIcon src="/images/sort-by-status-icon.svg" />
           <SortText>Filter By</SortText>
 
@@ -269,7 +269,7 @@ const Dashboard = () => {
         <SortByDate>
           <SortByDateIcon
             src="/images/sort-by-date-icon.svg"
-            onClick={handleCalendar}
+            onMouseEnter={handleCalendar}
           />
           <DatePicker
             editableDateInputs={false}
@@ -279,6 +279,7 @@ const Dashboard = () => {
             rangeColors={["#6a6ecc"]}
             showDateDisplay={false}
             showCalendar={showCalendar}
+            onMouseLeave={handleCalendar}
           />
         </SortByDate>
       </SortHeader>
