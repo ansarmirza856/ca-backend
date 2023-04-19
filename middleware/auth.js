@@ -24,6 +24,14 @@ const authMiddleware = (handler, requireAdmin = false) => {
 
       const user = await User.findOne({ email: userEmail });
 
+      if (!user) {
+        return res.status(401).json({
+          success: false,
+          error: "Unauthorized",
+          message: "User not found",
+        });
+      }
+
       if (user) {
         req.user = user;
       }
