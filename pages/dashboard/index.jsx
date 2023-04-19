@@ -133,7 +133,7 @@ const Dashboard = () => {
   const [showSortItem, setShowSortItem] = useState(false);
   const [state, setState] = useState([
     {
-      startDate: new Date(),
+      startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
       endDate: null,
       key: "selection",
     },
