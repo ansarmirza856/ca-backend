@@ -70,10 +70,10 @@ export default async function handler(req, res) {
             .status(404)
             .json({ success: false, error: "No form found" });
         }
-      } else if (action === "user-files") {
+      } else if (action === "final-delivery-files") {
         const userTaxApplication = await UserTaxApplication.findOneAndUpdate(
           { formId: formId },
-          { userAttachedFiles: uploadedFiles, applicationStatus: "in review" },
+          { finalDeliveryFiles: uploadedFiles, applicationStatus: "submitted" },
           { new: true }
         );
 
