@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
-import connectDB from "../../db";
+import connectDB from "../db";
 
 const authMiddleware = (handler, requireAdmin = false) => {
   return async (req, res) => {
