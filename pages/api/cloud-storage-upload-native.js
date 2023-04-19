@@ -1,6 +1,6 @@
 import multer from "multer";
 import AWS from "aws-sdk";
-import UserTaxApplication from "@/models/UserTaxApplication";
+import userTaxApplication from "@/models/UserTaxApplication";
 import { v4 as uuidv4 } from "uuid";
 
 export const config = {
@@ -50,7 +50,7 @@ export default async function handler(req, res) {
         key: req.file.originalname,
       });
 
-      const userTaxApplication = await UserTaxApplication.findOneAndUpdate(
+      const userTaxApplication = await userTaxApplication.findOneAndUpdate(
         { formId: formId },
         { userAttachedFiles: uploadedFiles, applicationStatus: "in process" },
         { new: true }
