@@ -18,6 +18,7 @@ import {
   SuccessMessage,
   ResendButton,
 } from "./index.elements";
+import { toast } from "react-toastify";
 
 const index = ({ data }) => {
   const [file1, setFile1] = useState(null);
@@ -96,7 +97,8 @@ const index = ({ data }) => {
       const data = await response.json();
 
       if (data.success) {
-        router.reload();
+        router.push("/dashboard");
+        toast.success("Files sent successfully");
       }
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -108,7 +110,9 @@ const index = ({ data }) => {
       <>
         <UserAttachments data={data} />
 
-        {data && data.data.deliveryFiles.length > 0 ? (
+        {data &&
+        data.data.deliveryFiles.length > 0 &&
+        data.data.amendmementRequest.requested === false ? (
           <AdminAttachments data={data} />
         ) : (
           <UploadForm onSubmit={handleSubmit}>
