@@ -18,6 +18,7 @@ export default authMiddleware(async function handler(req, res) {
             {
               ApprovedByUser: ApprovedByUser,
               "amendmementRequest.requested": false,
+              "amendmementRequest.reason": "",
               applicationStatus: "submitting",
             },
             { new: true }
