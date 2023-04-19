@@ -11,9 +11,11 @@ import {
 
 const index = ({ data }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingButton, setLoadingButton] = useState(null);
   const handleDownload = async (key, name) => {
     try {
       setIsLoading(true);
+      setLoadingButton(key);
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cloud-storage-download?key=${key}`
       );
@@ -34,6 +36,7 @@ const index = ({ data }) => {
       link.href = url;
       link.download = filename;
       setIsLoading(false);
+      setLoadingButton(null);
       document.body.appendChild(link);
       link.click();
 
@@ -59,7 +62,7 @@ const index = ({ data }) => {
                 name={file.name}
                 onClick={() => handleDownload(file.key, file.name)}
               >
-                {isLoading ? (
+                {isLoading && loadingButton === file.key ? (
                   <img src="/images/spinner.svg" alt="spinner" width="20px" />
                 ) : (
                   "Download"

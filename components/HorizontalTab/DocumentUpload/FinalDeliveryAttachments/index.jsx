@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/router";
 
 import {
   Container,
@@ -25,6 +26,10 @@ const index = ({ data }) => {
   const fileInput1Ref = useRef(null);
   const fileInput2Ref = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
+  const formId = data.data.formId;
+
+  const router = useRouter();
+
   const handleDownload = async (key, name) => {
     try {
       setIsLoading(true);
