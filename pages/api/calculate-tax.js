@@ -9,88 +9,6 @@ export default authMiddleware(async function handler(req, res) {
     try {
       const { formId } = req.body;
 
-      const getEmploymentData = await UserTaxApplication.findOne({
-        formId: req.body.formId,
-      });
-
-      const totalIncomeSe = getEmploymentData.selfEmployment
-        .map((se) => {
-          return se.income;
-        })
-        .reduce((acc, cur) => {
-          return acc + cur;
-        }, 0);
-
-      const totalGrantSe = getEmploymentData.selfEmployment
-        .map((se) => {
-          return se.grants;
-        })
-        .reduce((acc, cur) => {
-          return acc + cur;
-        }, 0);
-
-      const totalExpensesSe = getEmploymentData.selfEmployment
-        .map((se) => {
-          return (
-            se.fuel +
-            se.repair +
-            se.mot +
-            se.roadtax +
-            se.cleaning +
-            se.agencyCommission +
-            se.licensingCost +
-            se.telephone +
-            se.insurance +
-            se.breakdownAssistance +
-            se.iobl +
-            se.other +
-            se.accountacy
-          );
-        })
-        .reduce((acc, cur) => {
-          return acc + cur;
-        }, 0);
-
-      const totalIncomePe = getEmploymentData.personalEmployment
-        .map((pe) => {
-          return pe.totalIncome;
-        })
-        .reduce((acc, cur) => {
-          return acc + cur;
-        }, 0);
-
-      const totalTaxDeductedPe = getEmploymentData.personalEmployment
-        .map((pe) => {
-          return pe.totalTaxDeducted;
-        })
-        .reduce((acc, cur) => {
-          return acc + cur;
-        }, 0);
-
-      const totalIncomeAoe = getEmploymentData.anyOtherEmployment
-        .map((aoe) => {
-          return aoe.income;
-        })
-        .reduce((acc, cur) => {
-          return acc + cur;
-        }, 0);
-
-      const totalTaxDeductedAoe = getEmploymentData.anyOtherEmployment
-        .map((aoe) => {
-          return aoe.taxDeducted;
-        })
-        .reduce((acc, cur) => {
-          return acc + cur;
-        }, 0);
-
-      const accountancyFee = getEmploymentData.selfEmployment
-        .map((se) => {
-          return se.accountacy;
-        })
-        .reduce((acc, cur) => {
-          return acc + cur;
-        }, 0);
-
       const CLASS_2_FIXED_VALUE = 168.8;
       const CLASS_4_TAX_PERCENTAGE = 0.0973;
       const CLASS_4_TAX_PERCENTAGE_HIGHER = 0.0273;
@@ -108,6 +26,88 @@ export default authMiddleware(async function handler(req, res) {
       let incomeTaxHigher = 0;
       let incomeTaxAdditional = 0;
       let balancingAmount = 0;
+
+      const getEmploymentData = await UserTaxApplication.findOne({
+        formId: req.body.formId,
+      });
+
+      const totalIncomeSe = getEmploymentData.selfEmployment
+        .map((se) => {
+          return se.income ?? 0;
+        })
+        .reduce((acc, cur) => {
+          return acc + cur;
+        }, 0);
+
+      const totalGrantSe = getEmploymentData.selfEmployment
+        .map((se) => {
+          return se.grants ?? 0;
+        })
+        .reduce((acc, cur) => {
+          return acc + cur;
+        }, 0);
+
+      const totalExpensesSe = getEmploymentData.selfEmployment
+        .map((se) => {
+          return (
+            (se.fuel ?? 0) +
+            (se.repair ?? 0) +
+            (se.mot ?? 0) +
+            (se.roadtax ?? 0) +
+            (se.cleaning ?? 0) +
+            (se.agencyCommission ?? 0) +
+            (se.licensingCost ?? 0) +
+            (se.telephone ?? 0) +
+            (se.insurance ?? 0) +
+            (se.breakdownAssistance ?? 0) +
+            (se.iobl ?? 0) +
+            (se.other ?? 0) +
+            (se.accountacy ?? 0)
+          );
+        })
+        .reduce((acc, cur) => {
+          return acc + cur;
+        }, 0);
+
+      const totalIncomePe = getEmploymentData.personalEmployment
+        .map((pe) => {
+          return pe.totalIncome ?? 0;
+        })
+        .reduce((acc, cur) => {
+          return acc + cur;
+        }, 0);
+
+      const totalTaxDeductedPe = getEmploymentData.personalEmployment
+        .map((pe) => {
+          return pe.totalTaxDeducted ?? 0;
+        })
+        .reduce((acc, cur) => {
+          return acc + cur;
+        }, 0);
+
+      const totalIncomeAoe = getEmploymentData.anyOtherEmployment
+        .map((aoe) => {
+          return aoe.income ?? 0;
+        })
+        .reduce((acc, cur) => {
+          return acc + cur;
+        }, 0);
+
+      const totalTaxDeductedAoe = getEmploymentData.anyOtherEmployment
+        .map((aoe) => {
+          return aoe.taxDeducted ?? 0;
+        })
+        .reduce((acc, cur) => {
+          return acc + cur;
+        }, 0);
+
+      const accountancyFee = getEmploymentData.selfEmployment
+        .map((se) => {
+          return se.accountacy ?? 0;
+        })
+        .reduce((acc, cur) => {
+          return acc + cur;
+        }, 0);
 
       if (totalGrantSe) {
         profit = profit + totalGrantSe;
@@ -137,7 +137,15 @@ export default authMiddleware(async function handler(req, res) {
         totalExpenses = totalExpenses + totalExpensesSe;
       }
 
-      profit = Number((totalIncome - totalExpenses - totalTaxPaid).toFixed(2));
+      // profit = Number((totalIncome - totalExpenses - totalTaxPaid).toFixed(2));
+      profit = totalIncome - totalExpenses;
+      profit = profit - totalTaxPaid;
+
+      console.log("totalIncome", totalIncome);
+      console.log("totalExpenses", totalExpenses);
+      console.log("totalTaxPaid", totalTaxPaid);
+      console.log("profit", profit);
+      console.log("totalExpensesSe", totalExpensesSe);
 
       if (profit < 6515) {
         totalTax = 0;
