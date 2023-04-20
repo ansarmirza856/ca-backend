@@ -9,7 +9,7 @@ export default authMiddleware(async function handler(req, res) {
     try {
       const { formId } = req.body;
 
-      const CLASS_2_FIXED_VALUE = 168.8;
+      const CLASS_2_FIXED_VALUE = 163.8;
       const CLASS_4_TAX_PERCENTAGE = 0.0973;
       const CLASS_4_TAX_PERCENTAGE_HIGHER = 0.0273;
       const PERSONAL_ALLOWANCE_AMOUNT = 12500;
@@ -139,13 +139,6 @@ export default authMiddleware(async function handler(req, res) {
 
       // profit = Number((totalIncome - totalExpenses - totalTaxPaid).toFixed(2));
       profit = totalIncome - totalExpenses;
-      profit = profit - totalTaxPaid;
-
-      console.log("totalIncome", totalIncome);
-      console.log("totalExpenses", totalExpenses);
-      console.log("totalTaxPaid", totalTaxPaid);
-      console.log("profit", profit);
-      console.log("totalExpensesSe", totalExpensesSe);
 
       if (profit < 6515) {
         totalTax = 0;
@@ -202,6 +195,8 @@ export default authMiddleware(async function handler(req, res) {
         totalTax += balancingCharge;
         balancingAmount = balancingCharge;
       }
+
+      totalTax = totalTax - totalTaxPaid;
 
       const class2Rounded = Number(class2.toFixed(2));
       const class4Rounded = Number(class4.toFixed(2));
