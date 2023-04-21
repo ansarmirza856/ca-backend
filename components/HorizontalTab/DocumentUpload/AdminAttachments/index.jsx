@@ -77,7 +77,12 @@ const index = ({ data }) => {
                 onClick={() => handleDownload(file.key, file.name)}
               >
                 {isLoading && loadingButton === file.key ? (
-                  <img src="/images/spinner.svg" alt="spinner" width="20px" />
+                  <img
+                    src="/images/spinner.svg"
+                    alt="spinner"
+                    width="24px"
+                    height="24px"
+                  />
                 ) : (
                   "Download"
                 )}

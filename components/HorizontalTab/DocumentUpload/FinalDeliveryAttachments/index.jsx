@@ -157,7 +157,16 @@ const index = ({ data }) => {
                 <DownloadButton
                   onClick={() => handleDownload(file.key, file.name)}
                 >
-                  Download
+                  {isLoading ? (
+                    <img
+                      src="/images/spinner.svg"
+                      alt="spinner"
+                      width="24px"
+                      height="24px"
+                    />
+                  ) : (
+                    "Download"
+                  )}
                 </DownloadButton>
               </Document>
             );
