@@ -9,7 +9,6 @@ const tabs = [
   { id: 1, label: "Personal Information", disabled: false },
   { id: 2, label: "Tax Return", disabled: false },
   { id: 3, label: "Documents", disabled: true },
-  { id: 4, label: "Delivery", disabled: true },
 ];
 
 const collapsibles = [
@@ -26,9 +25,9 @@ const index = ({ data }) => {
       tabs[2].disabled = false;
     }
 
-    if (data && data.data?.ApprovedByUser) {
-      tabs[3].disabled = false;
-    }
+    // if (data && data.data?.ApprovedByUser) {
+    //   tabs[3].disabled = false;
+    // }
   }, []);
 
   const handleClick = (tabIndex) => {
@@ -85,7 +84,7 @@ const index = ({ data }) => {
         )}
 
         {activeTab === 3 && <DocumentUpload data={data} />}
-        {activeTab === 4 && <h4>Content of Tab 4</h4>}
+        {/* {activeTab === 4 && <h4>Content of Tab 4</h4>} */}
       </TabContent>
     </Container>
   );
