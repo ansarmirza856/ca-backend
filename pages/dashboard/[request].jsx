@@ -72,7 +72,7 @@ const Request = () => {
 
       {data && !error && !isLoading && (
         <>
-          <RequestRow request={data.data} />
+          <RequestRow request={data.data} showPaymentStatus={true} />
           <HorizontalTab data={data} />
         </>
       )}
