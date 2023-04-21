@@ -50,13 +50,14 @@ export default async function handler(req, res) {
         key: req.file.originalname,
       });
 
-      const userTaxApplication = await userTaxApplication.findOneAndUpdate(
-        { formId: formId },
-        { userAttachedFiles: uploadedFiles, applicationStatus: "in process" },
-        { new: true }
-      );
+      const updateUserTaxApplication =
+        await userTaxApplication.findOneAndUpdate(
+          { formId: formId },
+          { userAttachedFiles: uploadedFiles, applicationStatus: "in process" },
+          { new: true }
+        );
 
-      if (!userTaxApplication) {
+      if (!updateUserTaxApplication) {
         return res.status(404).json({ success: false, error: "No form found" });
       }
 
