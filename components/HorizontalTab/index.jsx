@@ -58,7 +58,7 @@ const index = ({ data }) => {
             <Collapsible
               title="Personal Information"
               slug="PI"
-              data={data.data.personalInformation}
+              data={data && data.data.personalInformation}
             ></Collapsible>
           </>
         )}
@@ -67,17 +67,17 @@ const index = ({ data }) => {
             <Collapsible
               title="Self Employment"
               slug="SE"
-              data={data.data.selfEmployment}
+              data={data && data.data.selfEmployment}
             />
             <Collapsible
               title="Personal Employment"
               slug="PE"
-              data={data.data.personalEmployment}
+              data={data && data.data.personalEmployment}
             />
             <Collapsible
               title="Any other Employment"
               slug="AOE"
-              data={data.data.anyOtherEmployment}
+              data={data && data.data.anyOtherEmployment}
             />
 
             <TaxReturnFooter calculations={data} />

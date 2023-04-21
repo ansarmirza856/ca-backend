@@ -7,6 +7,9 @@ import {
   Document,
   DocumentName,
   DownloadButton,
+  AmendementContainer,
+  AmendementTitle,
+  AmendementText,
 } from "./index.elements";
 
 const index = ({ data }) => {
@@ -52,6 +55,17 @@ const index = ({ data }) => {
     <Container>
       <SectionTitle>Tax Return Documents</SectionTitle>
       <DocumentContainer>
+        {data &&
+          data.data?.ApprovedByUser === false &&
+          data.data?.amendmementRequest.requested === true && (
+            <AmendementContainer>
+              <AmendementTitle>Amendement Requested</AmendementTitle>
+              <AmendementText>
+                {data.data?.amendmementRequest.reason}
+              </AmendementText>
+            </AmendementContainer>
+          )}
+
         {data &&
           data.data?.deliveryFiles.length > 0 &&
           data.data.deliveryFiles.map((file) => (

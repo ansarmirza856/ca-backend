@@ -171,3 +171,35 @@ export const DateHeading = styled.div`
   justify-content: center;
   margin-bottom: 14px;
 `;
+
+export const PaymentIntentContainer = styled.div`
+  width: 200px;
+  height: 50px;
+  border: none;
+  outline: none;
+  background: #fff;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6d6d6d;
+  text-transform: Capitalize;
+  text-decoration: none;
+  overflow: scroll;
+  transition: border 0.5s ease-in-out;
+
+  &:hover {
+    border: 1px solid #6a6ecc;
+  }
+
+  span {
+    font-size: 12px;
+    padding: 0 10px;
+    margin-bottom: 4px;
+    color: #6a6ecc;
+    user-select: none;
+  }
+`;

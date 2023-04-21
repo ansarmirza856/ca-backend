@@ -151,14 +151,38 @@ const index = ({ employment }) => {
             placeholder={`County: ${employment.previousAddress?.county}`}
             disabled
           />
-          <Input
-            placeholder={`Previous Address: ${employment.previousAddress}`}
-            disabled
-          />
         </InputContainer>
 
+        {employment.previousAddress && (
+          <>
+            <InputContainer>
+              <Input
+                placeholder={`Previous Address Line 1: ${employment.previousAddress?.addressLine1}`}
+                disabled
+              />
+              <Input
+                placeholder={`Previous Address Line 2: ${employment.previousAddress?.addressLine2}`}
+                disabled
+              />
+            </InputContainer>
+
+            <InputContainer>
+              <Input
+                placeholder={`Previous Address Town: ${employment.previousAddress?.town}`}
+                disabled
+              />
+              <Input
+                placeholder={`Previous Address Post Code: ${employment.previousAddress?.postCode}`}
+                disabled
+              />
+            </InputContainer>
+          </>
+        )}
         <InputContainer>
-          <Input placeholder={`Post Code: ${employment.postCode}`} disabled />
+          <Input
+            placeholder={`Previous Address County: ${employment.previousAddress?.county}`}
+            disabled
+          />
           <Input
             placeholder={`Living in current address for more than 3 years?: ${employment.longCurrentResidency}`}
             disabled

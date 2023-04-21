@@ -14,9 +14,10 @@ import {
   TaxType,
   Status,
   ViewIcon,
+  PaymentIntentContainer,
 } from "./index.elements";
 
-const index = ({ request }) => {
+const index = ({ request, showPaymentStatus }) => {
   let {
     formId,
     applicationStatus,
@@ -24,12 +25,26 @@ const index = ({ request }) => {
     taxType,
     firstName,
     lastName,
-  } = request;
+    ApprovedByUser,
+    amendmementRequest,
+    paymentIntent,
+    paymentStatus,
+  } = request || {};
   dateSubmitted = dateSubmitted ?? "2021-05-01T00:00:00.000Z";
   const formattedDate = format(parseISO(dateSubmitted), "dd MMMM yyyy");
+
   return (
     <div>
-      <Container>
+      <Container
+        style={{
+          backgroundColor:
+            !ApprovedByUser &&
+            amendmementRequest.requested === true &&
+            "#FFE7E8",
+          padding: "10px",
+          borderRadius: "4px",
+        }}
+      >
         <User src="/images/user-img-default.png" />
         <TaxInfo>
           <FilerName>{`${firstName} ${lastName}`}</FilerName>
@@ -40,10 +55,18 @@ const index = ({ request }) => {
           <Status Status={applicationStatus}>{applicationStatus}</Status>
         </TaxStatus>
         <Date>{formattedDate}</Date>
-        <Action href={`dashboard/${formId}`}>
-          <ViewIcon src="/images/view-button-icon.svg" />
-          View
-        </Action>
+
+        {showPaymentStatus ? (
+          <PaymentIntentContainer>
+            <span> Payment Status: </span>
+            {paymentIntent ? paymentIntent : paymentStatus}
+          </PaymentIntentContainer>
+        ) : (
+          <Action href={`dashboard/${formId}`}>
+            <ViewIcon src="/images/view-button-icon.svg" />
+            View
+          </Action>
+        )}
       </Container>
     </div>
   );

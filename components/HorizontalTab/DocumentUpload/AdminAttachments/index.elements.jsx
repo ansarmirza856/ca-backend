@@ -54,3 +54,23 @@ export const DownloadButton = styled.div`
     background: #6a6ecc;
   }
 `;
+
+export const AmendementContainer = styled.div`
+  color: #ff585f;
+  background-color: #ffe7e8;
+  border: 1px solid #ff585f;
+  padding: 10px 20px 20px 20px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+`;
+
+export const AmendementTitle = styled.h4`
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  margin-bottom: 10px;
+`;
+
+export const AmendementText = styled.p``;

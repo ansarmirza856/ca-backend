@@ -18,6 +18,9 @@ import {
   FileImage,
   FileName,
   SubmitButton,
+  AmendementContainer,
+  AmendementTitle,
+  AmendementText,
 } from "./index.elements";
 
 const index = ({ data }) => {
