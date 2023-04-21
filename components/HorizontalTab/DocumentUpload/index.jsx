@@ -116,78 +116,80 @@ const index = ({ data }) => {
         )}
 
         {(data && data.data.deliveryFiles.length === 0) ||
-          (data.data.amendmementRequest.requested === true && (
-            <>
-              <UploadForm onSubmit={handleSubmit}>
-                <UploadContainer>
-                  <UploadInput
-                    ref={fileInput1Ref}
-                    id="fileInput1"
-                    type="file"
-                    accept="image/*,.pdf"
-                  />
-                  <UploadInput
-                    ref={fileInput2Ref}
-                    id="fileInput2"
-                    type="file"
-                    accept="image/*,.pdf"
-                  />
-                  <UploadField
-                    onClick={() => {
-                      // Trigger click event on file input element when the div is clicked
-                      if (fileInput1Ref.current !== null && file1 === null) {
-                        fileInput1Ref.current.click();
-                      }
-                    }}
-                  >
-                    <UploadLabel>
-                      {file1 ? (
-                        <FileContainer>
-                          <FileImage src="/images/file-icon.svg" />
-                          <FileName>{file1.name}</FileName>
-                        </FileContainer>
-                      ) : (
-                        "+ Upload File"
-                      )}
-                    </UploadLabel>
-                    {file1 && (
-                      <RemoveFileButton onClick={handleRemoveFile1}>
-                        Remove File
-                      </RemoveFileButton>
+        data.data.amendmementRequest.requested === true ? (
+          <>
+            <UploadForm onSubmit={handleSubmit}>
+              <UploadContainer>
+                <UploadInput
+                  ref={fileInput1Ref}
+                  id="fileInput1"
+                  type="file"
+                  accept="image/*,.pdf"
+                />
+                <UploadInput
+                  ref={fileInput2Ref}
+                  id="fileInput2"
+                  type="file"
+                  accept="image/*,.pdf"
+                />
+                <UploadField
+                  onClick={() => {
+                    // Trigger click event on file input element when the div is clicked
+                    if (fileInput1Ref.current !== null && file1 === null) {
+                      fileInput1Ref.current.click();
+                    }
+                  }}
+                >
+                  <UploadLabel>
+                    {file1 ? (
+                      <FileContainer>
+                        <FileImage src="/images/file-icon.svg" />
+                        <FileName>{file1.name}</FileName>
+                      </FileContainer>
+                    ) : (
+                      "+ Upload File"
                     )}
-                  </UploadField>
+                  </UploadLabel>
+                  {file1 && (
+                    <RemoveFileButton onClick={handleRemoveFile1}>
+                      Remove File
+                    </RemoveFileButton>
+                  )}
+                </UploadField>
 
-                  <UploadField
-                    onClick={() => {
-                      // Trigger click event on file input element 2 when the div is clicked
-                      if (fileInput2Ref.current !== null && file2 === null) {
-                        fileInput2Ref.current.click();
-                      }
-                    }}
-                  >
-                    <UploadLabel>
-                      {file2 ? (
-                        <FileContainer>
-                          <FileImage src="/images/file-icon.svg" />
-                          <FileName>{file2.name}</FileName>
-                        </FileContainer>
-                      ) : (
-                        "+ Upload File"
-                      )}
-                    </UploadLabel>
-
-                    {file2 && (
-                      <RemoveFileButton onClick={handleRemoveFile2}>
-                        Remove File
-                      </RemoveFileButton>
+                <UploadField
+                  onClick={() => {
+                    // Trigger click event on file input element 2 when the div is clicked
+                    if (fileInput2Ref.current !== null && file2 === null) {
+                      fileInput2Ref.current.click();
+                    }
+                  }}
+                >
+                  <UploadLabel>
+                    {file2 ? (
+                      <FileContainer>
+                        <FileImage src="/images/file-icon.svg" />
+                        <FileName>{file2.name}</FileName>
+                      </FileContainer>
+                    ) : (
+                      "+ Upload File"
                     )}
-                  </UploadField>
-                </UploadContainer>
+                  </UploadLabel>
 
-                <SubmitButton type="submit">Send Documents</SubmitButton>
-              </UploadForm>
-            </>
-          ))}
+                  {file2 && (
+                    <RemoveFileButton onClick={handleRemoveFile2}>
+                      Remove File
+                    </RemoveFileButton>
+                  )}
+                </UploadField>
+              </UploadContainer>
+
+              <SubmitButton type="submit">Send Documents</SubmitButton>
+            </UploadForm>
+          </>
+        ) : (
+          ""
+        )}
 
         {data &&
           data.data.amendmementRequest.requested === false &&
