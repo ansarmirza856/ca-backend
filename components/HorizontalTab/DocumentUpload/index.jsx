@@ -21,7 +21,10 @@ import {
 } from "./index.elements";
 import { toast } from "react-toastify";
 
+import Spinner from "../.././Spinner";
+
 const index = ({ data }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [file1, setFile1] = useState(null);
   const [file2, setFile2] = useState(null);
   const fileInput1Ref = useRef(null);
@@ -79,6 +82,7 @@ const index = ({ data }) => {
         console.log("Please select a form");
         return;
       }
+      setIsLoading(true);
 
       const formData = new FormData();
       if (file1) {
@@ -96,7 +100,7 @@ const index = ({ data }) => {
         body: formData,
       });
       const data = await response.json();
-
+      setIsLoading(false);
       if (data.success) {
         router.push("/dashboard");
         toast.success("Files sent successfully");
@@ -117,76 +121,80 @@ const index = ({ data }) => {
 
         {(data && data.data.deliveryFiles.length === 0) ||
         data.data.amendmementRequest.requested === true ? (
-          <>
-            <UploadForm onSubmit={handleSubmit}>
-              <UploadContainer>
-                <UploadInput
-                  ref={fileInput1Ref}
-                  id="fileInput1"
-                  type="file"
-                  accept="image/*,.pdf"
-                />
-                <UploadInput
-                  ref={fileInput2Ref}
-                  id="fileInput2"
-                  type="file"
-                  accept="image/*,.pdf"
-                />
-                <UploadField
-                  onClick={() => {
-                    // Trigger click event on file input element when the div is clicked
-                    if (fileInput1Ref.current !== null && file1 === null) {
-                      fileInput1Ref.current.click();
-                    }
-                  }}
-                >
-                  <UploadLabel>
-                    {file1 ? (
-                      <FileContainer>
-                        <FileImage src="/images/file-icon.svg" />
-                        <FileName>{file1.name}</FileName>
-                      </FileContainer>
-                    ) : (
-                      "+ Upload File"
+          isLoading ? (
+            <Spinner />
+          ) : (
+            <>
+              <UploadForm onSubmit={handleSubmit}>
+                <UploadContainer>
+                  <UploadInput
+                    ref={fileInput1Ref}
+                    id="fileInput1"
+                    type="file"
+                    accept="image/*,.pdf"
+                  />
+                  <UploadInput
+                    ref={fileInput2Ref}
+                    id="fileInput2"
+                    type="file"
+                    accept="image/*,.pdf"
+                  />
+                  <UploadField
+                    onClick={() => {
+                      // Trigger click event on file input element when the div is clicked
+                      if (fileInput1Ref.current !== null && file1 === null) {
+                        fileInput1Ref.current.click();
+                      }
+                    }}
+                  >
+                    <UploadLabel>
+                      {file1 ? (
+                        <FileContainer>
+                          <FileImage src="/images/file-icon.svg" />
+                          <FileName>{file1.name}</FileName>
+                        </FileContainer>
+                      ) : (
+                        "+ Upload File"
+                      )}
+                    </UploadLabel>
+                    {file1 && (
+                      <RemoveFileButton onClick={handleRemoveFile1}>
+                        Remove File
+                      </RemoveFileButton>
                     )}
-                  </UploadLabel>
-                  {file1 && (
-                    <RemoveFileButton onClick={handleRemoveFile1}>
-                      Remove File
-                    </RemoveFileButton>
-                  )}
-                </UploadField>
+                  </UploadField>
 
-                <UploadField
-                  onClick={() => {
-                    // Trigger click event on file input element 2 when the div is clicked
-                    if (fileInput2Ref.current !== null && file2 === null) {
-                      fileInput2Ref.current.click();
-                    }
-                  }}
-                >
-                  <UploadLabel>
-                    {file2 ? (
-                      <FileContainer>
-                        <FileImage src="/images/file-icon.svg" />
-                        <FileName>{file2.name}</FileName>
-                      </FileContainer>
-                    ) : (
-                      "+ Upload File"
+                  <UploadField
+                    onClick={() => {
+                      // Trigger click event on file input element 2 when the div is clicked
+                      if (fileInput2Ref.current !== null && file2 === null) {
+                        fileInput2Ref.current.click();
+                      }
+                    }}
+                  >
+                    <UploadLabel>
+                      {file2 ? (
+                        <FileContainer>
+                          <FileImage src="/images/file-icon.svg" />
+                          <FileName>{file2.name}</FileName>
+                        </FileContainer>
+                      ) : (
+                        "+ Upload File"
+                      )}
+                    </UploadLabel>
+
+                    {file2 && (
+                      <RemoveFileButton onClick={handleRemoveFile2}>
+                        Remove File
+                      </RemoveFileButton>
                     )}
-                  </UploadLabel>
+                  </UploadField>
+                </UploadContainer>
 
-                  {file2 && (
-                    <RemoveFileButton onClick={handleRemoveFile2}>
-                      Remove File
-                    </RemoveFileButton>
-                  )}
-                </UploadField>
-              </UploadContainer>
-
-              <SubmitButton type="submit">Send Documents</SubmitButton>
-            </UploadForm>
-          </>
+                <SubmitButton type="submit">Send Documents</SubmitButton>
+              </UploadForm>
+            </>
+          )
         ) : (
           ""
         )}
