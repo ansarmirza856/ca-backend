@@ -12,7 +12,7 @@ export default authMiddleware(async function handler(req, res) {
       const CLASS_2_FIXED_VALUE = 163.8;
       const CLASS_4_TAX_PERCENTAGE = 0.0973;
       const CLASS_4_TAX_PERCENTAGE_HIGHER = 0.0273;
-      const PERSONAL_ALLOWANCE_AMOUNT = 12500;
+      const PERSONAL_ALLOWANCE_AMOUNT = 12570;
       const INCOME_TAX_PERCENTAGE = 0.2;
       let totalIncome = 0;
       let totalExpenses = 0;
@@ -109,10 +109,6 @@ export default authMiddleware(async function handler(req, res) {
           return acc + cur;
         }, 0);
 
-      if (totalGrantSe) {
-        profit = profit + totalGrantSe;
-      }
-
       if (totalIncomeSe) {
         totalIncome = totalIncome + totalIncomeSe;
       }
@@ -140,6 +136,12 @@ export default authMiddleware(async function handler(req, res) {
       // profit = Number((totalIncome - totalExpenses - totalTaxPaid).toFixed(2));
       profit = totalIncome - totalExpenses;
 
+      if (totalGrantSe) {
+        profit = profit + totalGrantSe;
+      }
+      console.log("totalGrantSe", totalGrantSe);
+      console.log("profit", profit);
+
       if (profit < 6515) {
         totalTax = 0;
       } else if (profit >= 6515 && profit <= 11908) {
@@ -147,7 +149,7 @@ export default authMiddleware(async function handler(req, res) {
       } else if (profit >= 11909) {
         totalTax += CLASS_2_FIXED_VALUE;
         class2 = CLASS_2_FIXED_VALUE;
-        let taxableProfit = profit - PERSONAL_ALLOWANCE_AMOUNT;
+        let taxableProfit = profit - 11908;
         if (profit <= 50270) {
           let class4Tax = taxableProfit * CLASS_4_TAX_PERCENTAGE;
           totalTax += class4Tax;
@@ -171,6 +173,7 @@ export default authMiddleware(async function handler(req, res) {
         let incomeTaxAmount = incomeTaxableProfit * INCOME_TAX_PERCENTAGE;
         totalTax += incomeTaxAmount;
         incomeTax = incomeTaxAmount;
+        // console.log("executed 1 ---------------");
       }
 
       if (profit >= 37701 && profit <= 150000) {
@@ -179,6 +182,7 @@ export default authMiddleware(async function handler(req, res) {
         totalTax += incomeTaxAmount;
         incomeTax += incomeTaxAmount;
         incomeTaxHigher = incomeTaxAmount;
+        // console.log("executed 2 ---------------");
       }
 
       if (profit > 150000) {
@@ -187,13 +191,18 @@ export default authMiddleware(async function handler(req, res) {
         totalTax += incomeTaxAmount;
         incomeTax += incomeTaxAmount;
         incomeTaxAdditional = incomeTaxAmount;
+        // console.log("executed 3 ---------------");
       }
 
       if (totalTax > 1000) {
+        console.log("totalTax", totalTax);
         let taxableAmount = totalTax - CLASS_2_FIXED_VALUE;
         let balancingCharge = taxableAmount / 2;
         totalTax += balancingCharge;
         balancingAmount = balancingCharge;
+        // console.log("Taxable Amount 4:", taxableAmount);
+        // console.log("balancingAmount", balancingAmount);
+        // console.log("executed 4 ---------------");
       }
 
       totalTax = totalTax - totalTaxPaid;
