@@ -50,7 +50,7 @@ export default async (req, res) => {
 
       const newUser = new User({
         firstName,
-        lastName,
+        surName: lastName,
         email,
         phone,
         otp,
