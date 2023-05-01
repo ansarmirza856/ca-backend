@@ -113,9 +113,9 @@ export default authMiddleware(async function handler(req, res) {
         totalIncome = totalIncome + totalIncomeSe;
       }
 
-      if (totalIncomePe) {
-        totalIncome = totalIncome + totalIncomePe;
-      }
+      // if (totalIncomePe) {
+      //   totalIncome = totalIncome + totalIncomePe;
+      // }
 
       if (totalIncomeAoe) {
         totalIncome = totalIncome + totalIncomeAoe;
@@ -139,8 +139,6 @@ export default authMiddleware(async function handler(req, res) {
       if (totalGrantSe) {
         profit = profit + totalGrantSe;
       }
-      console.log("totalGrantSe", totalGrantSe);
-      console.log("profit", profit);
 
       if (profit < 6515) {
         totalTax = 0;
@@ -168,7 +166,7 @@ export default authMiddleware(async function handler(req, res) {
         }
       }
 
-      if (profit > 12570 && profit <= 37700) {
+      if (totalIncomePe > 12570 && totalIncomePe <= 37700) {
         let incomeTaxableProfit = profit - PERSONAL_ALLOWANCE_AMOUNT;
         let incomeTaxAmount = incomeTaxableProfit * INCOME_TAX_PERCENTAGE;
         totalTax += incomeTaxAmount;
@@ -176,7 +174,7 @@ export default authMiddleware(async function handler(req, res) {
         // console.log("executed 1 ---------------");
       }
 
-      if (profit >= 37701 && profit <= 150000) {
+      if (totalIncomePe >= 37701 && totalIncomePe <= 150000) {
         let incomeTaxableProfit = profit - 37700;
         let incomeTaxAmount = incomeTaxableProfit * 0.4;
         totalTax += incomeTaxAmount;
@@ -185,7 +183,7 @@ export default authMiddleware(async function handler(req, res) {
         // console.log("executed 2 ---------------");
       }
 
-      if (profit > 150000) {
+      if (totalIncomePe > 150000) {
         let incomeTaxableProfit = profit - 150000;
         let incomeTaxAmount = incomeTaxableProfit * 0.45;
         totalTax += incomeTaxAmount;
