@@ -117,17 +117,17 @@ export default authMiddleware(async function handler(req, res) {
       //   totalIncome = totalIncome + totalIncomePe;
       // }
 
-      if (totalIncomeAoe) {
-        totalIncome = totalIncome + totalIncomeAoe;
-      }
+      // if (totalIncomeAoe) {
+      //   totalIncome = totalIncome + totalIncomeAoe;
+      // }
 
       if (totalTaxDeductedPe) {
         totalTaxPaid = totalTaxPaid + totalTaxDeductedPe;
       }
 
-      if (totalTaxDeductedAoe) {
-        totalTaxPaid = totalTaxPaid + totalTaxDeductedAoe;
-      }
+      // if (totalTaxDeductedAoe) {
+      //   totalTaxPaid = totalTaxPaid + totalTaxDeductedAoe;
+      // }
 
       if (totalExpensesSe) {
         totalExpenses = totalExpenses + totalExpensesSe;
@@ -135,10 +135,23 @@ export default authMiddleware(async function handler(req, res) {
 
       // profit = Number((totalIncome - totalExpenses - totalTaxPaid).toFixed(2));
       profit = totalIncome - totalExpenses;
+      profit = profit + totalGrantSe;
 
-      if (totalGrantSe) {
-        profit = profit + totalGrantSe;
-      }
+      profit = profit + totalIncomePe;
+      profit = profit - PERSONAL_ALLOWANCE_AMOUNT;
+
+      //profitSE  (turnover - expenses) + grant
+      //employment income + profiltSE = total income received
+      //total income received - personal allowance = taxable income
+
+      //then calculate tax on taxable income
+      // class 2
+      // class 4
+      // income tax
+
+      // total tax - tax deducted = total tax
+
+      // then add balancing charge if total tax is more than 1000
 
       if (profit < 6515) {
         totalTax = 0;
@@ -159,49 +172,100 @@ export default authMiddleware(async function handler(req, res) {
           totalTax += class4Tax;
           class4 = class4Tax;
 
+          let taxableProfitHigher = profit - 50270;
           let class4TaxHigher =
-            (profit - 50270) * CLASS_4_TAX_PERCENTAGE_HIGHER;
+            taxableProfitHigher * CLASS_4_TAX_PERCENTAGE_HIGHER;
           totalTax += class4TaxHigher;
           class4Higher = class4TaxHigher;
         }
       }
 
-      if (totalIncomePe > 12570 && totalIncomePe <= 37700) {
+      if (profit > 12570 && profit <= 37700) {
         let incomeTaxableProfit = profit - PERSONAL_ALLOWANCE_AMOUNT;
         let incomeTaxAmount = incomeTaxableProfit * INCOME_TAX_PERCENTAGE;
         totalTax += incomeTaxAmount;
         incomeTax = incomeTaxAmount;
-        // console.log("executed 1 ---------------");
       }
 
-      if (totalIncomePe >= 37701 && totalIncomePe <= 150000) {
+      if (profit >= 37701 && profit <= 150000) {
         let incomeTaxableProfit = profit - 37700;
         let incomeTaxAmount = incomeTaxableProfit * 0.4;
         totalTax += incomeTaxAmount;
         incomeTax += incomeTaxAmount;
         incomeTaxHigher = incomeTaxAmount;
-        // console.log("executed 2 ---------------");
       }
 
-      if (totalIncomePe > 150000) {
+      if (profit > 150000) {
         let incomeTaxableProfit = profit - 150000;
         let incomeTaxAmount = incomeTaxableProfit * 0.45;
         totalTax += incomeTaxAmount;
         incomeTax += incomeTaxAmount;
         incomeTaxAdditional = incomeTaxAmount;
-        // console.log("executed 3 ---------------");
       }
 
       if (totalTax > 1000) {
-        console.log("totalTax", totalTax);
         let taxableAmount = totalTax - CLASS_2_FIXED_VALUE;
         let balancingCharge = taxableAmount / 2;
         totalTax += balancingCharge;
         balancingAmount = balancingCharge;
-        // console.log("Taxable Amount 4:", taxableAmount);
-        // console.log("balancingAmount", balancingAmount);
-        // console.log("executed 4 ---------------");
       }
+
+      // if (profit < 6515) {
+      //   totalTax = 0;
+      // } else if (profit >= 6515 && profit <= 11908) {
+      //   totalTax = 0;
+      // } else if (profit >= 11909) {
+      //   totalTax += CLASS_2_FIXED_VALUE;
+      //   class2 = CLASS_2_FIXED_VALUE;
+      //   let taxableProfit = profit - 11908;
+      //   if (profit <= 50270) {
+      //     let class4Tax = taxableProfit * CLASS_4_TAX_PERCENTAGE;
+      //     totalTax += class4Tax;
+      //     class4 = class4Tax;
+      //   }
+
+      //   if (profit > 50270) {
+      //     let class4Tax = taxableProfit * CLASS_4_TAX_PERCENTAGE;
+      //     totalTax += class4Tax;
+      //     class4 = class4Tax;
+
+      //     let class4TaxHigher =
+      //       (profit - 50270) * CLASS_4_TAX_PERCENTAGE_HIGHER;
+      //     totalTax += class4TaxHigher;
+      //     class4Higher = class4TaxHigher;
+      //   }
+      // }
+
+      // if (profit > 12570 && profit <= 37700) {
+      //   let incomeTaxableProfit = profit - PERSONAL_ALLOWANCE_AMOUNT;
+      //   let incomeTaxAmount = incomeTaxableProfit * INCOME_TAX_PERCENTAGE;
+      //   totalTax += incomeTaxAmount;
+      //   incomeTax = incomeTaxAmount;
+      // }
+
+      // if (profit >= 37701 && profit <= 150000) {
+      //   let incomeTaxableProfit = profit - 37700;
+      //   let incomeTaxAmount = incomeTaxableProfit * 0.4;
+      //   totalTax += incomeTaxAmount;
+      //   incomeTax += incomeTaxAmount;
+      //   incomeTaxHigher = incomeTaxAmount;
+      // }
+
+      // if (profit > 150000) {
+      //   let incomeTaxableProfit = profit - 150000;
+      //   let incomeTaxAmount = incomeTaxableProfit * 0.45;
+      //   totalTax += incomeTaxAmount;
+      //   incomeTax += incomeTaxAmount;
+      //   incomeTaxAdditional = incomeTaxAmount;
+      // }
+
+      // if (totalTax > 1000) {
+      //   console.log("totalTax", totalTax);
+      //   let taxableAmount = totalTax - CLASS_2_FIXED_VALUE;
+      //   let balancingCharge = taxableAmount / 2;
+      //   totalTax += balancingCharge;
+      //   balancingAmount = balancingCharge;
+      // }
 
       totalTax = totalTax - totalTaxPaid;
 
@@ -238,3 +302,16 @@ export default authMiddleware(async function handler(req, res) {
     res.status(400).json({ success: false });
   }
 });
+
+//profitSE  (turnover - expenses) + grant
+//employment income + profiltSE = total income received
+//total income received - personal allowance = taxable income
+
+//then calculate tax on taxable income
+// class 2
+// class 4
+// income tax
+
+// total tax - tax deducted = total tax
+
+// then add balancing charge if total tax is more than 1000
