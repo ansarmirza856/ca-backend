@@ -45,9 +45,9 @@ const userSchema = new mongoose.Schema({
     type: Date,
   },
   isAdmin: { type: Boolean, default: false },
-  uTrNumber: { type: Number, required: true },
-  nInumber: { type: String, required: true },
-  dateOfBirth: { type: Date, required: true },
+  uTrNumber: { type: Number },
+  nInumber: { type: String },
+  dateOfBirth: { type: Date },
   currentAddress: {
     addressLine1: { type: String },
     addressLine2: { type: String },
