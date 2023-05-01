@@ -58,7 +58,11 @@ export default async (req, res) => {
         isAdmin,
         firstName,
         lastName,
+        surName,
         phone,
+        currentAddress,
+        nInumber,
+        uTrNumber,
       } = user;
 
       if (user.isEmailVerified === false) {
@@ -73,6 +77,9 @@ export default async (req, res) => {
             firstName: firstName,
             lastName: lastName,
             phone: phone,
+            currentAddress: currentAddress,
+            nInumber: nInumber,
+            uTrNumber: uTrNumber,
           },
         });
       }
@@ -88,7 +95,11 @@ export default async (req, res) => {
           isAdmin: isAdmin,
           firstName: firstName,
           lastName: lastName,
+          surName: surName,
           phone: phone,
+          currentAddress: currentAddress,
+          nInumber: nInumber,
+          uTrNumber: uTrNumber,
         },
       });
     } catch (error) {
