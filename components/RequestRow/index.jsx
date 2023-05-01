@@ -25,6 +25,7 @@ const index = ({ request, showPaymentStatus }) => {
     taxType,
     firstName,
     lastName,
+    surname,
     ApprovedByUser,
     amendmementRequest,
     paymentIntent,
@@ -47,7 +48,7 @@ const index = ({ request, showPaymentStatus }) => {
       >
         <User src="/images/user-img-default.png" />
         <TaxInfo>
-          <FilerName>{`${firstName} ${lastName}`}</FilerName>
+          <FilerName>{`${firstName} ${surName}`}</FilerName>
           <RequestId>{formId}</RequestId>
         </TaxInfo>
         <TaxType>Self employed, Business, Security job</TaxType>
