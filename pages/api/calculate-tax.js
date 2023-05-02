@@ -18,6 +18,7 @@ export default authMiddleware(async function handler(req, res) {
       let totalExpenses = 0;
       let totalTaxPaid = 0;
       let profit = 0;
+      let profitWithPE = 0;
       let totalTax = 0;
       let class2 = 0;
       let class4 = 0;
@@ -137,8 +138,9 @@ export default authMiddleware(async function handler(req, res) {
       profit = totalIncome - totalExpenses;
       profit = profit + totalGrantSe;
 
-      profit = profit + totalIncomePe;
-      profit = profit - PERSONAL_ALLOWANCE_AMOUNT;
+      profitWithPE = profit + totalIncomePe;
+
+      // profit = profit - PERSONAL_ALLOWANCE_AMOUNT;
 
       //profitSE  (turnover - expenses) + grant
       //employment income + profiltSE = total income received
@@ -161,13 +163,14 @@ export default authMiddleware(async function handler(req, res) {
         totalTax += CLASS_2_FIXED_VALUE;
         class2 = CLASS_2_FIXED_VALUE;
         let taxableProfit = profit - 11908;
-        if (profit <= 50270) {
+
+        if (taxableProfit <= 50270) {
           let class4Tax = taxableProfit * CLASS_4_TAX_PERCENTAGE;
           totalTax += class4Tax;
           class4 = class4Tax;
         }
 
-        if (profit > 50270) {
+        if (taxableProfit > 50270) {
           let class4Tax = taxableProfit * CLASS_4_TAX_PERCENTAGE;
           totalTax += class4Tax;
           class4 = class4Tax;
@@ -180,30 +183,32 @@ export default authMiddleware(async function handler(req, res) {
         }
       }
 
-      if (profit > 12570 && profit <= 37700) {
-        let incomeTaxableProfit = profit - PERSONAL_ALLOWANCE_AMOUNT;
+      if (profitWithPE > 12570 && profitWithPE <= 37700) {
+        let incomeTaxableProfit = profitWithPE - PERSONAL_ALLOWANCE_AMOUNT;
         let incomeTaxAmount = incomeTaxableProfit * INCOME_TAX_PERCENTAGE;
         totalTax += incomeTaxAmount;
         incomeTax = incomeTaxAmount;
       }
 
-      if (profit >= 37701 && profit <= 150000) {
-        let incomeTaxableProfit = profit - 37700;
+      if (profitWithPE >= 37701 && profitWithPE <= 150000) {
+        let incomeTaxableProfit = profitWithPE - 37700;
         let incomeTaxAmount = incomeTaxableProfit * 0.4;
         totalTax += incomeTaxAmount;
         incomeTax += incomeTaxAmount;
         incomeTaxHigher = incomeTaxAmount;
       }
 
-      if (profit > 150000) {
-        let incomeTaxableProfit = profit - 150000;
+      if (profitWithPE > 150000) {
+        let incomeTaxableProfit = profitWithPE - 150000;
         let incomeTaxAmount = incomeTaxableProfit * 0.45;
         totalTax += incomeTaxAmount;
         incomeTax += incomeTaxAmount;
         incomeTaxAdditional = incomeTaxAmount;
       }
 
-      if (totalTax > 1000) {
+      totalTax = totalTax - totalTaxPaid;
+
+      if (totalTax - CLASS_2_FIXED_VALUE > 1000) {
         let taxableAmount = totalTax - CLASS_2_FIXED_VALUE;
         let balancingCharge = taxableAmount / 2;
         totalTax += balancingCharge;
@@ -266,8 +271,6 @@ export default authMiddleware(async function handler(req, res) {
       //   totalTax += balancingCharge;
       //   balancingAmount = balancingCharge;
       // }
-
-      totalTax = totalTax - totalTaxPaid;
 
       const class2Rounded = Number(class2.toFixed(2));
       const class4Rounded = Number(class4.toFixed(2));
