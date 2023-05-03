@@ -183,22 +183,25 @@ export default authMiddleware(async function handler(req, res) {
         }
       }
 
-      if (profitWithPE > 12570 && profitWithPE <= 37700) {
+      if (profitWithPE - PERSONAL_ALLOWANCE_AMOUNT > 12570) {
         let incomeTaxableProfit = profitWithPE - PERSONAL_ALLOWANCE_AMOUNT;
         let incomeTaxAmount = incomeTaxableProfit * INCOME_TAX_PERCENTAGE;
         totalTax += incomeTaxAmount;
         incomeTax = incomeTaxAmount;
       }
 
-      if (profitWithPE >= 37701 && profitWithPE <= 150000) {
-        let incomeTaxableProfit = profitWithPE - 37700;
+      if (
+        profitWithPE - PERSONAL_ALLOWANCE_AMOUNT >= 37701 &&
+        profitWithPE <= 150000
+      ) {
+        let incomeTaxableProfit = profitWithPE - 37701;
         let incomeTaxAmount = incomeTaxableProfit * 0.4;
         totalTax += incomeTaxAmount;
         incomeTax += incomeTaxAmount;
         incomeTaxHigher = incomeTaxAmount;
       }
 
-      if (profitWithPE > 150000) {
+      if (profitWithPE - PERSONAL_ALLOWANCE_AMOUNT > 150000) {
         let incomeTaxableProfit = profitWithPE - 150000;
         let incomeTaxAmount = incomeTaxableProfit * 0.45;
         totalTax += incomeTaxAmount;
