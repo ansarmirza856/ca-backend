@@ -25,7 +25,7 @@ const index = ({ request, showPaymentStatus }) => {
     taxType,
     firstName,
     lastName,
-    surname,
+    surName,
     ApprovedByUser,
     amendmementRequest,
     paymentIntent,
