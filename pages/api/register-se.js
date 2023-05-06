@@ -27,7 +27,7 @@ export default authMiddleware(async function handler(req, res) {
         {
           applicationStatus: "pending",
           firstName: req.user.firstName,
-          lastName: req.user.lastName,
+          surName: req.user.lastName,
           userEmail: req.user.email,
           dateSubmitted: new Date(),
           ...req.body,
