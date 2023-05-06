@@ -198,7 +198,7 @@ const Dashboard = () => {
   const filteredData = data.filter(
     (request) =>
       (request.firstName.toLowerCase().includes(filter.toLowerCase()) ||
-        request.lastName.toLowerCase().includes(filter.toLowerCase()) ||
+        request.surName.toLowerCase().includes(filter.toLowerCase()) ||
         request.applicationStatus
           .toLowerCase()
           .includes(filter.toLowerCase())) &&
