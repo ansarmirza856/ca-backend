@@ -14,7 +14,18 @@ export default authMiddleware(async function handler(req, res) {
       const CLASS_4_TAX_PERCENTAGE_HIGHER = 0.0273;
       const PERSONAL_ALLOWANCE_AMOUNT = 12570;
       const INCOME_TAX_PERCENTAGE = 0.2;
+      const INCOME_TAX_PERCENTAGE_HIGHER = 0.4;
+      const LOWER_PROFIT_LIMIT_FOR_NI = 11908;
       let totalIncome = 0;
+      let totalIncomePE = 0;
+      let totalIncomeReceived = 0;
+      let lowerTaxableAmount = 37700;
+      let higherTaxableAmount = 0;
+      let incomeTaxOnLowerAmount = 0;
+      let incomeTaxOnHigherAmount = 0;
+      let totalTaxDueThisYear = 0;
+      let paymentOnAccount = 0;
+      let TaxableIncome = 0;
       let totalExpenses = 0;
       let totalTaxPaid = 0;
       let profit = 0;
@@ -134,146 +145,70 @@ export default authMiddleware(async function handler(req, res) {
         totalExpenses = totalExpenses + totalExpensesSe;
       }
 
-      // profit = Number((totalIncome - totalExpenses - totalTaxPaid).toFixed(2));
+      // Adjusted Profit Before Tax
       profit = totalIncome - totalExpenses;
       profit = profit + totalGrantSe;
 
-      profitWithPE = profit + totalIncomePe;
+      // Employment Income
+      totalIncomePE = totalIncomePe;
 
-      // profit = profit - PERSONAL_ALLOWANCE_AMOUNT;
+      //Total Income Received
+      totalIncomeReceived = profit + totalIncomePE;
 
-      //profitSE  (turnover - expenses) + grant
-      //employment income + profiltSE = total income received
-      //total income received - personal allowance = taxable income
+      //Taxable Income
+      if (totalIncomeReceived > PERSONAL_ALLOWANCE_AMOUNT) {
+        TaxableIncome = totalIncomeReceived - PERSONAL_ALLOWANCE_AMOUNT;
+      }
 
-      //then calculate tax on taxable income
-      // class 2
-      // class 4
-      // income tax
+      //Higher Taxable Amount
+      if (TaxableIncome > lowerTaxableAmount) {
+        higherTaxableAmount = TaxableIncome - lowerTaxableAmount;
+      }
 
-      // total tax - tax deducted = total tax
+      //Income Tax on Lower Amount
+      if (TaxableIncome >= lowerTaxableAmount) {
+        incomeTaxOnLowerAmount = lowerTaxableAmount * INCOME_TAX_PERCENTAGE;
+      } else {
+        incomeTaxOnLowerAmount = TaxableIncome * INCOME_TAX_PERCENTAGE;
+      }
 
-      // then add balancing charge if total tax is more than 1000
+      //Income Tax on Higher Amount
+      if (TaxableIncome >= lowerTaxableAmount) {
+        incomeTaxOnHigherAmount =
+          higherTaxableAmount * INCOME_TAX_PERCENTAGE_HIGHER;
+      }
 
-      if (profit < 6515) {
-        totalTax = 0;
-      } else if (profit >= 6515 && profit <= 11908) {
-        totalTax = 0;
-      } else if (profit >= 11909) {
-        totalTax += CLASS_2_FIXED_VALUE;
+      function calculateClass4Tax(profit) {
+        if (profit <= 11908) {
+          return 0;
+        } else {
+          if (profit <= 50270) {
+            return (profit - 11908) * 0.0973;
+          } else {
+            return (50270 - 11908) * 0.0973 + (profit - 50270) * 0.0273;
+          }
+        }
+      }
+
+      class4 = calculateClass4Tax(profit);
+
+      if (totalIncomeReceived > LOWER_PROFIT_LIMIT_FOR_NI) {
         class2 = CLASS_2_FIXED_VALUE;
-        let taxableProfit = profit - 11908;
-
-        if (taxableProfit <= 50270) {
-          let class4Tax = taxableProfit * CLASS_4_TAX_PERCENTAGE;
-          totalTax += class4Tax;
-          class4 = class4Tax;
-        }
-
-        if (taxableProfit > 50270) {
-          let class4Tax = taxableProfit * CLASS_4_TAX_PERCENTAGE;
-          totalTax += class4Tax;
-          class4 = class4Tax;
-
-          let taxableProfitHigher = profit - 50270;
-          let class4TaxHigher =
-            taxableProfitHigher * CLASS_4_TAX_PERCENTAGE_HIGHER;
-          totalTax += class4TaxHigher;
-          class4Higher = class4TaxHigher;
-        }
+        totalTax = totalTax + CLASS_2_FIXED_VALUE;
       }
 
-      if (profitWithPE - PERSONAL_ALLOWANCE_AMOUNT > 12570) {
-        let incomeTaxableProfit = profitWithPE - PERSONAL_ALLOWANCE_AMOUNT;
-        let incomeTaxAmount = incomeTaxableProfit * INCOME_TAX_PERCENTAGE;
-        totalTax += incomeTaxAmount;
-        incomeTax = incomeTaxAmount;
+      totalTaxDueThisYear =
+        class4 +
+        incomeTaxOnLowerAmount -
+        totalTaxPaid +
+        class2 +
+        incomeTaxOnHigherAmount;
+
+      if (totalTaxDueThisYear - CLASS_2_FIXED_VALUE > 1000) {
+        paymentOnAccount = (totalTaxDueThisYear - CLASS_2_FIXED_VALUE) / 2;
       }
 
-      if (
-        profitWithPE - PERSONAL_ALLOWANCE_AMOUNT >= 37701 &&
-        profitWithPE <= 150000
-      ) {
-        let incomeTaxableProfit = profitWithPE - 37701;
-        let incomeTaxAmount = incomeTaxableProfit * 0.4;
-        totalTax += incomeTaxAmount;
-        incomeTax += incomeTaxAmount;
-        incomeTaxHigher = incomeTaxAmount;
-      }
-
-      if (profitWithPE - PERSONAL_ALLOWANCE_AMOUNT > 150000) {
-        let incomeTaxableProfit = profitWithPE - 150000;
-        let incomeTaxAmount = incomeTaxableProfit * 0.45;
-        totalTax += incomeTaxAmount;
-        incomeTax += incomeTaxAmount;
-        incomeTaxAdditional = incomeTaxAmount;
-      }
-
-      totalTax = totalTax - totalTaxPaid;
-
-      if (totalTax - CLASS_2_FIXED_VALUE > 1000) {
-        let taxableAmount = totalTax - CLASS_2_FIXED_VALUE;
-        let balancingCharge = taxableAmount / 2;
-        totalTax += balancingCharge;
-        balancingAmount = balancingCharge;
-      }
-
-      // if (profit < 6515) {
-      //   totalTax = 0;
-      // } else if (profit >= 6515 && profit <= 11908) {
-      //   totalTax = 0;
-      // } else if (profit >= 11909) {
-      //   totalTax += CLASS_2_FIXED_VALUE;
-      //   class2 = CLASS_2_FIXED_VALUE;
-      //   let taxableProfit = profit - 11908;
-      //   if (profit <= 50270) {
-      //     let class4Tax = taxableProfit * CLASS_4_TAX_PERCENTAGE;
-      //     totalTax += class4Tax;
-      //     class4 = class4Tax;
-      //   }
-
-      //   if (profit > 50270) {
-      //     let class4Tax = taxableProfit * CLASS_4_TAX_PERCENTAGE;
-      //     totalTax += class4Tax;
-      //     class4 = class4Tax;
-
-      //     let class4TaxHigher =
-      //       (profit - 50270) * CLASS_4_TAX_PERCENTAGE_HIGHER;
-      //     totalTax += class4TaxHigher;
-      //     class4Higher = class4TaxHigher;
-      //   }
-      // }
-
-      // if (profit > 12570 && profit <= 37700) {
-      //   let incomeTaxableProfit = profit - PERSONAL_ALLOWANCE_AMOUNT;
-      //   let incomeTaxAmount = incomeTaxableProfit * INCOME_TAX_PERCENTAGE;
-      //   totalTax += incomeTaxAmount;
-      //   incomeTax = incomeTaxAmount;
-      // }
-
-      // if (profit >= 37701 && profit <= 150000) {
-      //   let incomeTaxableProfit = profit - 37700;
-      //   let incomeTaxAmount = incomeTaxableProfit * 0.4;
-      //   totalTax += incomeTaxAmount;
-      //   incomeTax += incomeTaxAmount;
-      //   incomeTaxHigher = incomeTaxAmount;
-      // }
-
-      // if (profit > 150000) {
-      //   let incomeTaxableProfit = profit - 150000;
-      //   let incomeTaxAmount = incomeTaxableProfit * 0.45;
-      //   totalTax += incomeTaxAmount;
-      //   incomeTax += incomeTaxAmount;
-      //   incomeTaxAdditional = incomeTaxAmount;
-      // }
-
-      // if (totalTax > 1000) {
-      //   console.log("totalTax", totalTax);
-      //   let taxableAmount = totalTax - CLASS_2_FIXED_VALUE;
-      //   let balancingCharge = taxableAmount / 2;
-      //   totalTax += balancingCharge;
-      //   balancingAmount = balancingCharge;
-      // }
+      totalTax = totalTaxDueThisYear + paymentOnAccount;
 
       const class2Rounded = Number(class2.toFixed(2));
       const class4Rounded = Number(class4.toFixed(2));
@@ -289,8 +224,8 @@ export default authMiddleware(async function handler(req, res) {
           profit,
           class2: class2Rounded,
           class4: class4Rounded,
-          incomeTax,
-          totalTax,
+          incomeTax: incomeTaxOnLowerAmount + incomeTaxOnHigherAmount,
+          totalTax: totalTax,
           accountancyFee,
           totalTaxPaid,
           paymentStatus: "pending",
@@ -308,16 +243,3 @@ export default authMiddleware(async function handler(req, res) {
     res.status(400).json({ success: false });
   }
 });
-
-//profitSE  (turnover - expenses) + grant
-//employment income + profiltSE = total income received
-//total income received - personal allowance = taxable income
-
-//then calculate tax on taxable income
-// class 2
-// class 4
-// income tax
-
-// total tax - tax deducted = total tax
-
-// then add balancing charge if total tax is more than 1000
