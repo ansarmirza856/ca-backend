@@ -212,8 +212,11 @@ export default authMiddleware(async function handler(req, res) {
 
       const class2Rounded = Number(class2.toFixed(2));
       const class4Rounded = Number(class4.toFixed(2));
+      incomeTax = incomeTaxOnLowerAmount + incomeTaxOnHigherAmount;
       incomeTax = Number(incomeTax.toFixed(2));
       totalTax = Number(totalTax.toFixed(2));
+      totalTaxDueThisYear = Number(totalTaxDueThisYear.toFixed(2));
+      paymentOnAccount = Number(paymentOnAccount.toFixed(2));
 
       const calculatedTax = await UserTaxApplication.findOneAndUpdate(
         { formId },
@@ -224,7 +227,10 @@ export default authMiddleware(async function handler(req, res) {
           profit,
           class2: class2Rounded,
           class4: class4Rounded,
-          incomeTax: incomeTaxOnLowerAmount + incomeTaxOnHigherAmount,
+          incomeTax: incomeTax,
+          dueForThisYear: totalTaxDueThisYear,
+          paymentOnAccount: paymentOnAccount,
+          totalTaxDue: totalTax,
           totalTax: totalTax,
           accountancyFee,
           totalTaxPaid,
