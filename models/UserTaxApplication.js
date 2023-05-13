@@ -22,6 +22,9 @@ const userTaxApplicationSchema = new mongoose.Schema({
   firstName: { type: String },
   lastName: { type: String },
   userEmail: { type: String },
+  dueForThisYear: { type: Number },
+  paymentOnAccount: { type: Number },
+  totalTaxDue: { type: Number },
   deliveryFiles: [
     {
       name: { type: String, required: true },
