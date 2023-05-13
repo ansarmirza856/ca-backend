@@ -44,6 +44,27 @@ const index = ({ calculations }) => {
             £{calculations.data.incomeTax}
           </CalculationContent>
         </CalculationWrapper>
+
+        <CalculationWrapper>
+          <CalculationHeader>Due for this year</CalculationHeader>
+          <CalculationContent>
+            £{calculations.data.dueForThisYear ?? 0}
+          </CalculationContent>
+        </CalculationWrapper>
+
+        <CalculationWrapper>
+          <CalculationHeader>Payment on account for 23/24</CalculationHeader>
+          <CalculationContent>
+            £{calculations.data.paymentOnAccount ?? 0}
+          </CalculationContent>
+        </CalculationWrapper>
+
+        <CalculationWrapper>
+          <CalculationHeader>Total due by 31st Jan 2024</CalculationHeader>
+          <CalculationContent>
+            £{calculations.data.totalTaxDue ?? 0}
+          </CalculationContent>
+        </CalculationWrapper>
       </CalculationContainer>
 
       <TotalContainer>
