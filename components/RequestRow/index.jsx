@@ -48,7 +48,7 @@ const index = ({ request, showPaymentStatus }) => {
       >
         <User src="/images/user-img-default.png" />
         <TaxInfo>
-          <FilerName>{`${firstName} ${surName}`}</FilerName>
+          <FilerName>{`${firstName} ${(surName || lastName) ?? ""}`}</FilerName>
           <RequestId>{formId}</RequestId>
         </TaxInfo>
         <TaxType>Self employed, Business, Security job</TaxType>
