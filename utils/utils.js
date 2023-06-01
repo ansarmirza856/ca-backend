@@ -14,7 +14,7 @@ export const sendEmail = (email, subject, body) => {
     email: "noreply@caaccounts.com",
   };
   sendSmtpEmail.to = [{ email }];
-  sendSmtpEmail.replyTo = { email: "noreply@myapp.com" };
+  sendSmtpEmail.replyTo = { email: "noreply@caaccounts.com" };
 
   // Send the email
   apiInstance.sendTransacEmail(sendSmtpEmail).then(
