@@ -27,7 +27,7 @@ export default authMiddleware(async function handler(req, res) {
       await userTaxApplication.findOneAndUpdate(
         { formId: req.body.formId },
         {
-          paymentIntent: req.body.paidWith,
+          paymentIntent: req.body.paymentIntent ?? null,
           paymentStatus: req.body.paymentStatus,
         },
         { new: true }
