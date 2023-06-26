@@ -29,6 +29,7 @@ export default authMiddleware(async function handler(req, res) {
         {
           paymentIntent: req.body.paymentIntent ?? null,
           paymentStatus: req.body.paymentStatus,
+          applicationStatus: "submitting",
         },
         { new: true }
       );
